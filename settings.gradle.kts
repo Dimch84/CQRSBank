@@ -1,3 +1,3 @@
 
-rootProject.name = "proj2"
+rootProject.name = "CQRSBank"
 
