@@ -32,6 +32,10 @@ dependencies {
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("org.springframework.integration:spring-integration-test")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
 }
 
 tasks.test {
