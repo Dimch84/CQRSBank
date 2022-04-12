@@ -1,3 +1,3 @@
 package api.abstractions
 
-class CardBody(val name: String, val type: String, val account: String)
+data class CardBody(val name: String, val type: String, val account_id: Int)

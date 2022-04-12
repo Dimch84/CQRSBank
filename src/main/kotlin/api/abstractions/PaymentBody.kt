@@ -1,3 +1,3 @@
 package api.abstractions
 
-class PaymentBody(val money: Long)
+class PaymentBody(val money: ULong)

@@ -1,3 +1,3 @@
 package api.abstractions
 
-class TransferBody(val money: Long)
+class TransferBody(val money: ULong)
