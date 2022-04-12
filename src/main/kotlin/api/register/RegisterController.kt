@@ -1,6 +1,8 @@
 package api.register
 
 import api.abstractions.RegisterBody
+import api.abstractions.UserProfileBody
+import domain.Register
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
@@ -17,9 +19,9 @@ class RegisterController {
     @ApiOperation(value = "Show user by login")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/register/{login}")
-    suspend fun getRegisterLogin(@PathVariable login: String): String {
+    suspend fun getRegisterLogin(@PathVariable login: String): UserProfileBody {
         log.info("GET Response: /register/${login}")
-        return "Ok"
+        return Register(login).data
     }
 
     @ApiOperation(value = "Register user by login and password")
@@ -27,9 +29,9 @@ class RegisterController {
         ApiResponse(code = 200, message = "Ok"),
         ApiResponse(code = 409, message = "Login already exist")])
     @PostMapping("/register/{login}")
-    suspend fun postRegisterLogin(@PathVariable login: String, @RequestBody registerBody: RegisterBody): String {
+    suspend fun postRegisterLogin(@PathVariable login: String, @RequestBody registerBody: RegisterBody): Int {
         log.info("POST Response: /register/${login}")
-        return "Ok"
+        return Register(login).post(registerBody)
     }
 
     @ApiOperation(value = "Delete user by login")
@@ -37,8 +39,8 @@ class RegisterController {
         ApiResponse(code = 200, message = "Ok"),
         ApiResponse(code = 409, message = "Login not exist")])
     @DeleteMapping("/register/{login}")
-    suspend fun deleteRegisterLogin(@PathVariable login: String): String {
+    suspend fun deleteRegisterLogin(@PathVariable login: String) {
         log.info("DELETE Response: /register/${login}")
-        return "Ok"
+        return Register(login).delete()
     }
 }

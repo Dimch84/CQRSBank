@@ -1,6 +1,8 @@
 package api.user
 
+import api.abstractions.AccountBody
 import api.abstractions.UserProfileBody
+import domain.User
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
@@ -17,24 +19,24 @@ class UserController {
     @ApiOperation(value = "Return user profile")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/user")
-    suspend fun getUser(): String {
+    suspend fun getUser(): UserProfileBody {
         log.info("GET Response: /user")
-        return "Ok"
+        return User().data
     }
 
     @ApiOperation(value = "Return user accounts")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/user/accounts")
-    suspend fun getUserAccounts(): String {
+    suspend fun getUserAccounts(): List<AccountBody> {
         log.info("GET Response: /user/accounts")
-        return "Ok"
+        return User().accounts
     }
 
     @ApiOperation(value = "Update user profile")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @PostMapping("/user")
-    suspend fun postUser(@RequestBody userProfileBody: UserProfileBody): String {
+    suspend fun postUser(@RequestBody userProfileBody: UserProfileBody) {
         log.info("POST Response: /user")
-        return "Ok"
+        return User().post(userProfileBody)
     }
 }

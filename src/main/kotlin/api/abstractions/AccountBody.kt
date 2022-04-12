@@ -1,3 +1,3 @@
 package api.abstractions
 
-class AccountBody(val plan: String, val money: String)
+class AccountBody(val plan: String, val money: Int)

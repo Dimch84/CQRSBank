@@ -1,3 +1,3 @@
 package api.abstractions
 
-class RegisterBody(val password: String)
+class RegisterBody(val name: String, val password: String)
