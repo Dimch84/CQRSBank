@@ -36,4 +36,8 @@ class Card(private var id: Int? = null) {
 
     fun delete(): Unit = id?.let { id -> transaction { DBCard.findById(id)?.run { delete() } } }
         ?: throw Exception("wrong account id")
+
+    fun getAll(): List<CardBody> = transaction {
+        DBCard.all().map { card -> Card(card.id.value).data }
+    }
 }

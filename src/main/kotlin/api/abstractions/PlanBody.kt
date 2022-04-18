@@ -1,3 +1,3 @@
 package api.abstractions
 
-class PlanBody(name: String)
+data class PlanBody(val id: Int)

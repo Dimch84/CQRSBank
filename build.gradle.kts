@@ -23,7 +23,7 @@ repositories {
 
 val exposedVersion: String by project
 dependencies {
-    implementation("org.postgresql:postgresql:42.2.2")
+    implementation("org.postgresql:postgresql:42.3.3")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
@@ -37,11 +37,14 @@ dependencies {
     implementation("io.springfox:springfox-swagger2:3.0.0")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.6.1")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.integration:spring-integration-test")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
 }
 
 tasks.test {

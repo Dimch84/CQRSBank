@@ -16,7 +16,7 @@ class User {
 
     val accounts: List<AccountBody>
         get() = transaction { getUser().run { Account.find { Accounts.user_id eq id.value } }
-            .map { acc -> AccountBody(acc.plan.name, acc.money) }
+            .map { acc -> AccountBody(acc.user_id.id.value, acc.plan.id.value, acc.money) }
         }
 
     private fun getUser() = DBUser.find { Users.login eq userLogin }.also { assert(it.count() == 1L) }.first()
@@ -29,5 +29,9 @@ class User {
             userProfileBody.email?.let { email=userProfileBody.email }
         }
         Unit
+    }
+
+    fun getAll(): List<UserProfileBody> = transaction {
+        DBUser.all().map { user -> UserProfileBody(name = user.name, login = user.login, phone = user.phone, email = user.email) }
     }
 }

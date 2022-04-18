@@ -20,4 +20,8 @@ class Register(private val login: String) {
     }.id.value
 
     fun delete(): Unit = transaction { getUser().delete() }
+
+    fun getAll(): List<RegisterBody> = transaction {
+        DBUser.all().map { user -> RegisterBody(name = user.name, password = user.password) }
+    }
 }
