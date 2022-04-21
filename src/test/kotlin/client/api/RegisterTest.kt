@@ -1,9 +1,9 @@
-package api
+package client.api
 
-import api.abstractions.RegisterBody
-import api.config.Application
-import db.postgresql.*
-import domain.Register
+import client.api.abstractions.RegisterBody
+import config.Application
+import client.postgresql.*
+import client.domain.Register
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger

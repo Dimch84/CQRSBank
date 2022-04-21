@@ -1,12 +1,11 @@
-package api
+package client.api
 
-import api.abstractions.CardBody
-import api.abstractions.PaymentBody
-import api.abstractions.TransferBody
-import api.config.Application
-import db.postgresql.*
-import domain.Card
-import org.jetbrains.exposed.sql.Database
+import client.api.abstractions.CardBody
+import client.api.abstractions.PaymentBody
+import client.api.abstractions.TransferBody
+import config.Application
+import client.postgresql.*
+import client.domain.Card
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
