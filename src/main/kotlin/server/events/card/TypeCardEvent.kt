@@ -1,4 +1,4 @@
-package server.db.postgresql.events.card
+package server.events.card
 
 enum class TypeCardEvent {
     CARD_CREATE_EVENT,

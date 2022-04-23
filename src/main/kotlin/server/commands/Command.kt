@@ -1,3 +1,7 @@
 package server.commands
 
-interface Command
+import server.events.command.TypeCommand
+
+interface Command {
+    val typeCommand: TypeCommand
+}

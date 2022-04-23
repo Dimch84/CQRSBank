@@ -1,14 +1,14 @@
-package server.db.postgresql.events.card
+package server.events.card
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import server.db.postgresql.events.AnyStoreEvent
+import server.events.AnyStore
 import javax.persistence.AttributeConverter
 import javax.persistence.Converter
-import server.db.postgresql.events.card.TypeCardEvent.*
+import server.events.card.TypeCardEvent.*
 
 
-data class StoreCardEvent(val cardEvent: CardEvent, val type: TypeCardEvent): AnyStoreEvent {
+data class StoreCardEvent(val cardEvent: CardEvent, val type: TypeCardEvent): AnyStore {
     companion object {
         class StorePreCardEvent(val cardEvent: String, val type: TypeCardEvent)
 
@@ -27,7 +27,7 @@ data class StoreCardEvent(val cardEvent: CardEvent, val type: TypeCardEvent): An
         open class ConverterEvent : AttributeConverter<List<StoreCardEvent>, String> {
             companion object {
                 private val GSON = Gson()
-                private val preConverterEvent = StoreCardEvent.Companion.PreConverterEvent()
+                private val preConverterEvent = PreConverterEvent()
                 private val cardCreateType = object : TypeToken<CardCreateEvent>() {}.type
                 private val cardUpdateNameType = object : TypeToken<CardUpdateNameEvent>() {}.type
             }

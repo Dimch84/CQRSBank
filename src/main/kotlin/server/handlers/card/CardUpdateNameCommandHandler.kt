@@ -5,22 +5,28 @@ import org.springframework.stereotype.Component
 import server.abstractions.CardEventRes
 import server.commands.card.CardUpdateNameCommand
 import server.db.postgresql.CardEventsRepository
+import server.db.postgresql.TempEventsRepository
+import server.db.postgresql.entities.SimpleCommand
 import server.handlers.AnyHandler
 import server.observers.ObserverCard
 
 @Component
 class CardUpdateNameCommandHandler @Autowired constructor(observerCard: ObserverCard,
-                                                          private val cardEventsRepository: CardEventsRepository)
-    : AnyHandler<CardUpdateNameCommand, CardEventRes>(cardEventsRepository) {
+                                                          private val cardEventsRepository: CardEventsRepository,
+                                                          private val tempEventsRepository: TempEventsRepository)
+    : AnyHandler<CardEventRes>(cardEventsRepository) {
     init {
         attach(observerCard)
     }
 
-    override fun handle(command: CardUpdateNameCommand) {
+    override fun handle(simpleCommand: SimpleCommand): String {
+        val command = simpleCommand.command.cardCommand as CardUpdateNameCommand
         cardEvents(command.id).run {
             val cardUpd = update(command.event)
             cardEventsRepository.save(this)
             send(cardUpd)
+            tempEventsRepository.deleteById(simpleCommand.id!!)
         }
+        return "ok"
     }
 }

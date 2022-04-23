@@ -2,11 +2,11 @@ package server.handlers
 
 import server.abstractions.Res
 import server.observers.AnyObserver
-import server.commands.Command
 import server.db.postgresql.CardEventsRepository
-import server.eventsDomain.card.CardEvents
+import server.db.postgresql.entities.CardEvents
+import server.db.postgresql.entities.SimpleCommand
 
-abstract class AnyHandler<T : Command, R : Res>(private val cardEventsRepository: CardEventsRepository) {
+abstract class AnyHandler<R : Res>(private val cardEventsRepository: CardEventsRepository) {
     protected fun cardEvents(id: Long? = null): CardEvents {
         return (id?.let {
             cardEventsRepository.findById(id).get().apply { initEvents() }
@@ -21,5 +21,5 @@ abstract class AnyHandler<T : Command, R : Res>(private val cardEventsRepository
 
     fun send(res: R) = anyObservers.forEach { it.update(res) }
 
-    abstract fun handle(command: T)
+    abstract fun handle(simpleCommand: SimpleCommand): Any
 }

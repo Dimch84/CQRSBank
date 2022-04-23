@@ -1,11 +1,10 @@
-package server.eventsDomain.card
+package server.db.postgresql.entities
 
 import server.abstractions.CardEventRes
-import server.db.postgresql.events.card.CardCreateEvent
-import server.db.postgresql.events.card.CardUpdateNameEvent
-import server.db.postgresql.events.card.StoreCardEvent
-import server.db.postgresql.events.card.TypeCardEvent.*
-import server.eventsDomain.DomainEvents
+import server.events.card.CardCreateEvent
+import server.events.card.CardUpdateNameEvent
+import server.events.card.StoreCardEvent
+import server.events.card.TypeCardEvent.*
 import javax.persistence.*
 
 
