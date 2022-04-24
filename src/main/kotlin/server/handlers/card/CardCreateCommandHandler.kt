@@ -20,7 +20,6 @@ class CardCreateCommandHandler @Autowired constructor(observerCard: ObserverCard
     }
 
     override fun handle(simpleCommand: SimpleCommand): Long {
-
         val command = simpleCommand.command.cardCommand as CardCreateCommand
         return cardEvents().run {
             val cardUpd = update(command.event)

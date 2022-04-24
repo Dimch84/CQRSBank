@@ -1,0 +1,19 @@
+#GET http://localhost:8080/register/my_login
+
+###
+POST http://localhost:8080/cqrs/cards
+Content-Type: application/json
+
+{
+  "name": "name",
+  "type": "type",
+  "account_id": 1
+}
+
+###
+POST http://localhost:8080/cqrs/cards/2/updateName
+Content-Type: application/json
+
+{
+  "name": "name2"
+}

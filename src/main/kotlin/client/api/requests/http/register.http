@@ -5,6 +5,7 @@ POST http://localhost:8080/register/my_login
 Content-Type: application/json
 
 {
+  "name": "name",
   "password": "my_password"
 }
 

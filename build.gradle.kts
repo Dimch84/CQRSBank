@@ -22,6 +22,7 @@ configurations {
 
 repositories {
     maven { url = uri("https://repo.spring.io/release") }
+    maven { url = uri("https://jcenter.bintray.com") }
     mavenCentral()
 }
 
@@ -50,6 +51,9 @@ dependencies {
     implementation("org.projectlombok:lombok:1.18.20")
     implementation("com.google.code.gson:gson:2.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")

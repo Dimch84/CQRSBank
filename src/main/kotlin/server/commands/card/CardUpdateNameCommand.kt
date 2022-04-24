@@ -10,4 +10,6 @@ class CardUpdateNameCommand(val name: String, val id: Long): Command {
 
     override val typeCommand: TypeCommand
         get() = TypeCommand.CARD_UPDATE_NAME_COMMAND
+
+    fun toMap() = mapOf("name" to name, "id" to id)
 }
