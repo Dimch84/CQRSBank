@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import server.commands.card.*
+import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardQuery
 import server.service.CommandService
@@ -21,6 +22,13 @@ class CardsCommandsController @Autowired constructor(private val service: Comman
     @PostMapping("/cardsCommands/byIdHistory")
     suspend fun postCardsByIdHistoryQuery(@RequestBody cardHistoryQuery: CardHistoryQuery) =
         service.send(cardHistoryQuery)
+
+    @ApiOperation(value = "Get all cards")
+    @PostMapping("/cardsCommands/all")
+    suspend fun postCardsAllQuery(@RequestBody cardAllQuery: CardAllQuery) =
+        service.send(cardAllQuery)
+
+    //
 
     @ApiOperation(value = "Return id new card")
     @PostMapping("/cardsCommands/create")

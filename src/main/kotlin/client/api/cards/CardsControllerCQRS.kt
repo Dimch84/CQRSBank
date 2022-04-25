@@ -30,7 +30,7 @@ class CardsControllerCQRS {
     @ApiOperation(value = "Return card")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/cqrs/cards/{id}")
-    suspend fun getCardsById(@PathVariable id: Long): String {  // CardBody {
+    suspend fun getCardsById(@PathVariable id: Long): String {  // CardBody
         log.info("GET Response: /cqrs/cards/${id}")
         val query = CardQuery(id)
         val cardJson = sendToUrl("http://localhost:8080/cardsCommands/byId", query.toMap())

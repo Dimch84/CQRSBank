@@ -12,12 +12,22 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import server.events.command.TypeCommand.*
 import server.handlers.card.command.*
+import server.handlers.card.query.CardAllQueryHandler
 import server.handlers.card.query.CardByIdHistoryQueryHandler
 import server.handlers.card.query.CardByIdQueryHandler
 import server.handlers.user.command.UserCreateCommandHandler
+import server.handlers.user.command.UserDeleteCommandHandler
+import server.handlers.user.command.UserUpdateProfileCommandHandler
+import server.handlers.user.query.UserAllQueryHandler
+import server.handlers.user.query.UserByLoginAccountsQueryHandler
+import server.handlers.user.query.UserByLoginQueryHandler
 import server.queries.Query
+import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardQuery
+import server.queries.user.UserAccountsQuery
+import server.queries.user.UserAllQuery
+import server.queries.user.UserQuery
 
 @Service
 class CommandService @Autowired constructor(private val tempEventsRepository: TempEventsRepository,
@@ -29,8 +39,14 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
                                             private val cardDeleteCommandHandler: CardDeleteCommandHandler,
                                             private val cardByIdQueryHandler: CardByIdQueryHandler,
                                             private val cardByIdHistoryQueryHandler: CardByIdHistoryQueryHandler,
+                                            private val cardAllQueryHandler: CardAllQueryHandler,
 
-                                            private val userCreateCommandHandler: UserCreateCommandHandler,) {
+                                            private val userCreateCommandHandler: UserCreateCommandHandler,
+                                            private val userUpdateProfileCommandHandler: UserUpdateProfileCommandHandler,
+                                            private val userDeleteCommandHandler: UserDeleteCommandHandler,
+                                            private val userByLoginQueryHandler: UserByLoginQueryHandler,
+                                            private val userByLoginAccountsQueryHandler: UserByLoginAccountsQueryHandler,
+                                            private val userAllQueryHandler: UserAllQueryHandler) {
     private val executorService = Executors.newFixedThreadPool(10)
     private val log: Logger = LoggerFactory.getLogger(CommandService::class.java)
 
@@ -45,6 +61,8 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
             CARD_DELETE_COMMAND -> cardDeleteCommandHandler.handle(simpleCommand)
 
             USER_CREATE_COMMAND -> userCreateCommandHandler.handle(simpleCommand)
+            USER_UPDATE_PROFILE_COMMAND -> userUpdateProfileCommandHandler.handle(simpleCommand)
+            USER_DELETE_COMMAND -> userDeleteCommandHandler.handle(simpleCommand)
         }
     } catch (ex: Exception) {
         log.error(ex.message)
@@ -61,6 +79,11 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
         when (query) {
             is CardQuery -> cardByIdQueryHandler.handle(query)
             is CardHistoryQuery -> cardByIdHistoryQueryHandler.handle(query)
+            is CardAllQuery -> cardAllQueryHandler.handle(query)
+
+            is UserQuery -> userByLoginQueryHandler.handle(query)
+            is UserAccountsQuery -> userByLoginAccountsQueryHandler.handle(query)
+            is UserAllQuery -> userAllQueryHandler.handle(query)
             else -> throw Exception("wrong query")
         }
     } catch (ex: Exception) {

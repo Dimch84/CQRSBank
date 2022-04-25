@@ -10,4 +10,6 @@ import server.db.mongo.entities.UserEntity
 interface CardRepository : MongoRepository<CardEntity, Long>
 
 @Repository
-interface UserRepository : MongoRepository<UserEntity, Long>
+interface UserRepository : MongoRepository<UserEntity, Long> {
+    fun findByLogin(login: String): UserEntity?
+}

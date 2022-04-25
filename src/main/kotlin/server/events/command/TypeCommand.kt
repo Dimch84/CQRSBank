@@ -3,6 +3,8 @@ package server.events.command
 import com.google.gson.reflect.TypeToken
 import server.commands.card.*
 import server.commands.user.UserCreateCommand
+import server.commands.user.UserDeleteCommand
+import server.commands.user.UserUpdateProfileCommand
 import java.lang.reflect.Type
 
 enum class TypeCommand {
@@ -13,7 +15,10 @@ enum class TypeCommand {
     CARD_RECEIPT_COMMAND,
     CARD_DELETE_COMMAND,
 
-    USER_CREATE_COMMAND;
+    USER_CREATE_COMMAND,
+    USER_UPDATE_PROFILE_COMMAND,
+    USER_DELETE_COMMAND;
+
     val commandType: Type
         get() = when(this) {
             CARD_CREATE_COMMAND -> object : TypeToken<CardCreateCommand>() {}.type
@@ -24,5 +29,7 @@ enum class TypeCommand {
             CARD_DELETE_COMMAND -> object : TypeToken<CardDeleteCommand>() {}.type
 
             USER_CREATE_COMMAND -> object : TypeToken<UserCreateCommand>() {}.type
+            USER_UPDATE_PROFILE_COMMAND -> object : TypeToken<UserUpdateProfileCommand>() {}.type
+            USER_DELETE_COMMAND -> object : TypeToken<UserDeleteCommand>() {}.type
         }
 }

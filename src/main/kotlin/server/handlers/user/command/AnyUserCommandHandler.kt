@@ -12,4 +12,9 @@ abstract class AnyUserCommandHandler<R : AnyUserEventRes>(private val userEvents
             userEventsRepository.findById(id).get().apply { initEvents() }
         } ?: userEventsRepository.save(UserEvents()))
     }
+
+    protected fun userEvents(login: String): UserEvents {
+        return userEventsRepository.findByLoginEnd(login)?.apply { initEvents() }
+            ?: throw Exception("wrong login")
+    }
 }

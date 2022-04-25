@@ -74,18 +74,18 @@ class CardTest {
         val card = Card()
         card.post(CardBody("my_card", "Credit card", account1.id.value))
         assert(account1.money == 1000)
-        card.pay(PaymentBody(500UL))
+        card.pay(PaymentBody(500L))
         assert(getMoney(accId) == 500)
-        assertThrows<Exception> { card.pay(PaymentBody(501UL)) }
+        assertThrows<Exception> { card.pay(PaymentBody(501L)) }
         assert(getMoney(accId) == 500)
-        card.receipt(TransferBody(200UL))
+        card.receipt(TransferBody(200L))
         assert(getMoney(accId) == 700)
-        card.pay(PaymentBody(501UL))
+        card.pay(PaymentBody(501L))
         assert(getMoney(accId) == 199)
-        assertThrows<Exception> { card.transfer(TransferBody(250UL)) }
-        card.transfer(TransferBody(199UL))
+        assertThrows<Exception> { card.transfer(TransferBody(250L)) }
+        card.transfer(TransferBody(199L))
         assert(getMoney(accId) == 0)
-        card.receipt(TransferBody(1000UL))
+        card.receipt(TransferBody(1000L))
         assert(getMoney(accId) == 1000)
     }
 }
