@@ -8,9 +8,9 @@ import javax.persistence.AttributeConverter
 import javax.persistence.Converter
 
 
-data class StoreCommand(val cardCommand: Command, val type: TypeCommand): AnyStore {
+data class StoreCommand(val command: Command, val type: TypeCommand): AnyStore {
     companion object {
-        class StorePreCommand(val cardCommand: String, val type: TypeCommand)
+        class StorePreCommand(val command: String, val type: TypeCommand)
 
         @Converter(autoApply = true)
         open class PreConverterCommand : AttributeConverter<StorePreCommand, String> {
@@ -31,10 +31,10 @@ data class StoreCommand(val cardCommand: Command, val type: TypeCommand): AnySto
             }
 
             override fun convertToDatabaseColumn(command: StoreCommand): String =
-                preConverterCommand.convertToDatabaseColumn(StorePreCommand(GSON.toJson(command.cardCommand), command.type))
+                preConverterCommand.convertToDatabaseColumn(StorePreCommand(GSON.toJson(command.command), command.type))
             override fun convertToEntityAttribute(dbData: String): StoreCommand =
                 preConverterCommand.convertToEntityAttribute(dbData).run {
-                    StoreCommand(GSON.fromJson(cardCommand, type.commandType), type)
+                    StoreCommand(GSON.fromJson(command, type.commandType), type)
                 }
         }
     }

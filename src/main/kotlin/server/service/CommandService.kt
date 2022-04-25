@@ -11,10 +11,10 @@ import server.events.command.StoreCommand
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import server.events.command.TypeCommand.*
-import server.exceptions.DeleteException
 import server.handlers.card.command.*
 import server.handlers.card.query.CardByIdHistoryQueryHandler
 import server.handlers.card.query.CardByIdQueryHandler
+import server.handlers.user.command.UserCreateCommandHandler
 import server.queries.Query
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardQuery
@@ -28,20 +28,23 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
                                             private val cardReceiptCommandHandler: CardReceiptCommandHandler,
                                             private val cardDeleteCommandHandler: CardDeleteCommandHandler,
                                             private val cardByIdQueryHandler: CardByIdQueryHandler,
-                                            private val cardByIdHistoryQueryHandler: CardByIdHistoryQueryHandler
-) {
+                                            private val cardByIdHistoryQueryHandler: CardByIdHistoryQueryHandler,
+
+                                            private val userCreateCommandHandler: UserCreateCommandHandler,) {
     private val executorService = Executors.newFixedThreadPool(10)
     private val log: Logger = LoggerFactory.getLogger(CommandService::class.java)
 
     // TODO(optimize later)
     private fun handle(simpleCommand: SimpleCommand) = try {
-        when (simpleCommand.command.type) {
+        when (simpleCommand.store.type) {
             CARD_CREATE_COMMAND -> cardCreateCommandHandler.handle(simpleCommand)
             CARD_UPDATE_NAME_COMMAND -> cardUpdateNameCommandHandler.handle(simpleCommand)
             CARD_PAY_COMMAND -> cardPayCommandHandler.handle(simpleCommand)
             CARD_TRANSFER_COMMAND -> cardTransferCommandHandler.handle(simpleCommand)
             CARD_RECEIPT_COMMAND -> cardReceiptCommandHandler.handle(simpleCommand)
             CARD_DELETE_COMMAND -> cardDeleteCommandHandler.handle(simpleCommand)
+
+            USER_CREATE_COMMAND -> userCreateCommandHandler.handle(simpleCommand)
         }
     } catch (ex: Exception) {
         log.error(ex.message)

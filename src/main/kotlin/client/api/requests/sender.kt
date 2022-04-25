@@ -7,7 +7,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import client.api.requests.RequestType.*
 
-fun sendToUrl(url: String, data: Map<String, Any>, type: RequestType = POST): String {
+fun sendToUrl(url: String, data: Map<String, Any?>, type: RequestType = POST): String {
     val con: HttpURLConnection = when(type) {
         POST -> (URL(url).openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"

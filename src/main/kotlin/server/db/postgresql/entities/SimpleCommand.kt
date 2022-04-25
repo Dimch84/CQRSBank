@@ -8,7 +8,7 @@ import javax.persistence.*
 class SimpleCommand(
     @Convert(converter = StoreCommand.Companion.ConverterCommand::class)
     @Column(columnDefinition = "jsonb", name = "command", nullable = false)
-    val command: StoreCommand) {
+    val store: StoreCommand) {
 
     @Id
     @Column(name = "id", nullable = false)

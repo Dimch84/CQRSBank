@@ -9,14 +9,16 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 import server.db.mongo.CardRepository
+import server.db.mongo.UserRepository
 import server.db.postgresql.CardEventsRepository
 import server.db.postgresql.TempEventsRepository
+import server.db.postgresql.UserEventsRepository
 
 
 @SpringBootApplication
 @ComponentScan("client.api", "server")
-@EnableMongoRepositories(basePackageClasses=[CardRepository::class])
-@EnableJpaRepositories(basePackageClasses=[CardEventsRepository::class, TempEventsRepository::class])
+@EnableMongoRepositories(basePackageClasses=[CardRepository::class, UserRepository::class])
+@EnableJpaRepositories(basePackageClasses=[TempEventsRepository::class, CardEventsRepository::class, UserEventsRepository::class])
 @EntityScan("server.db")
 class Application
 
