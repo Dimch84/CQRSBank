@@ -61,7 +61,7 @@ class CardsController {
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @PostMapping("/cards/{id}/receipt")
     suspend fun postCardsReceiptById(@PathVariable id: Int, @RequestBody transferBody: TransferBody): Any {
-        log.info("POST Response: /cards/${id}/transfer")
+        log.info("POST Response: /cards/${id}/receipt")
         return Card(id).receipt(transferBody)
     }
 

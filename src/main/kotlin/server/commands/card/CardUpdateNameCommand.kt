@@ -4,7 +4,7 @@ import server.commands.Command
 import server.events.card.CardUpdateNameEvent
 import server.events.command.TypeCommand
 
-class CardUpdateNameCommand(val name: String, val id: Long): Command {
+class CardUpdateNameCommand(val name: String="", val id: Long=-1): Command {
     val event: CardUpdateNameEvent
         get() = CardUpdateNameEvent(name, id)
 

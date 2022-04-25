@@ -28,8 +28,6 @@ data class StoreCardEvent(val cardEvent: CardEvent, val type: TypeCardEvent): An
             companion object {
                 private val GSON = Gson()
                 private val preConverterEvent = PreConverterEvent()
-                private val cardCreateType = object : TypeToken<CardCreateEvent>() {}.type
-                private val cardUpdateNameType = object : TypeToken<CardUpdateNameEvent>() {}.type
             }
 
             override fun convertToDatabaseColumn(events: List<StoreCardEvent>): String =
@@ -38,10 +36,7 @@ data class StoreCardEvent(val cardEvent: CardEvent, val type: TypeCardEvent): An
                 )
             override fun convertToEntityAttribute(dbData: String): List<StoreCardEvent> =
                 preConverterEvent.convertToEntityAttribute(dbData).map {
-                    when(it.type) {
-                        CARD_CREATE_EVENT -> StoreCardEvent(GSON.fromJson(it.cardEvent, cardCreateType), it.type)
-                        CARD_UPDATE_NAME_EVENT -> StoreCardEvent(GSON.fromJson(it.cardEvent, cardUpdateNameType), it.type)
-                    }
+                    StoreCardEvent(GSON.fromJson(it.cardEvent, it.type.eventType), it.type)
                 }
         }
     }

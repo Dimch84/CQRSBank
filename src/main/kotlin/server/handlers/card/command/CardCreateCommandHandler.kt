@@ -1,8 +1,9 @@
-package server.handlers.card
+package server.handlers.card.command
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import server.abstractions.CardEventRes
+import server.abstractions.card.AnyCardEventRes
+import server.abstractions.card.CardEventRes
 import server.commands.card.CardCreateCommand
 import server.db.postgresql.CardEventsRepository
 import server.db.postgresql.TempEventsRepository
@@ -14,7 +15,7 @@ import server.observers.ObserverCard
 class CardCreateCommandHandler @Autowired constructor(observerCard: ObserverCard,
                                                       private val cardEventsRepository: CardEventsRepository,
                                                       private val tempEventsRepository: TempEventsRepository)
-    : AnyCommandHandler<CardEventRes>(cardEventsRepository) {
+    : AnyCommandHandler<AnyCardEventRes>(cardEventsRepository) {
     init {
         attach(observerCard)
     }

@@ -4,7 +4,7 @@ import server.commands.Command
 import server.events.card.CardCreateEvent
 import server.events.command.TypeCommand
 
-class CardCreateCommand(val name: String, val type: String, val account_id: Int): Command {
+class CardCreateCommand(val name: String="", val type: String="", val account_id: Int=-1): Command {
     val event: CardCreateEvent
         get() = CardCreateEvent(name, type, account_id)
 

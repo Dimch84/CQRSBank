@@ -1,10 +1,10 @@
 package server.db.postgresql.entities
 
-import server.abstractions.CardEventRes
-import server.events.card.CardCreateEvent
-import server.events.card.CardUpdateNameEvent
-import server.events.card.StoreCardEvent
+import server.abstractions.card.CardDeleteEventRes
+import server.abstractions.card.CardEventRes
+import server.events.card.*
 import server.events.card.TypeCardEvent.*
+import server.exceptions.DeleteException
 import javax.persistence.*
 
 
@@ -13,7 +13,7 @@ import javax.persistence.*
 class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
     @Convert(converter = StoreCardEvent.Companion.ConverterEvent::class)
@@ -33,6 +33,9 @@ class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
                 when (it.type) {
                     CARD_CREATE_EVENT -> update(it.cardEvent as CardCreateEvent, add = false)
                     CARD_UPDATE_NAME_EVENT -> update(it.cardEvent as CardUpdateNameEvent, add = false)
+                    CARD_PAY_EVENT -> update(it.cardEvent as CardPayEvent, add = false)
+                    CARD_TRANSFER_EVENT -> update(it.cardEvent as CardTransferEvent, add = false)
+                    CARD_DELETE_EVENT -> throw DeleteException("card with id=${(it.cardEvent as CardDeleteEvent).id} was deleted")
                 }
             }
         }
@@ -49,6 +52,23 @@ class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
         eventRes.apply { name=event.name }
         if (add) events.add(StoreCardEvent(event, CARD_UPDATE_NAME_EVENT))
         return eventRes
+    }
+
+    fun update(event: CardPayEvent, add: Boolean = true): CardEventRes {
+        // TODO
+        if (add) events.add(StoreCardEvent(event, CARD_PAY_EVENT))
+        return eventRes
+    }
+
+    fun update(event: CardTransferEvent, add: Boolean = true): CardEventRes {
+        // TODO
+        if (add) events.add(StoreCardEvent(event, CARD_TRANSFER_EVENT))
+        return eventRes
+    }
+
+    fun update(event: CardDeleteEvent): CardDeleteEventRes {
+        events.add(StoreCardEvent(event, CARD_DELETE_EVENT))
+        return CardDeleteEventRes(id)
     }
 
     override fun update() = eventRes
