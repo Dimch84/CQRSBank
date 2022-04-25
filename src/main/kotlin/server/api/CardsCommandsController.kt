@@ -6,11 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import server.commands.card.CardCreateCommand
 import server.commands.card.CardUpdateNameCommand
+import server.queries.card.CardByIdQuery
 import server.service.CommandService
 
 @RestController
 @Api(description = "cards commands")
 class CardsCommandsController @Autowired constructor(private val service: CommandService) {
+    @ApiOperation(value = "Get card by id")
+    @PostMapping("/cardsCommands/byId")
+    suspend fun postCardsByIdQuery(@RequestBody cardByIdQuery: CardByIdQuery): String {
+        return service.send(cardByIdQuery)
+    }
+
     @ApiOperation(value = "Return id new card")
     @PostMapping("/cardsCommands/create")
     suspend fun postCardsCreate(@RequestBody cardCreateCommand: CardCreateCommand) =

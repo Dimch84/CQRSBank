@@ -7,14 +7,14 @@ import server.commands.card.CardUpdateNameCommand
 import server.db.postgresql.CardEventsRepository
 import server.db.postgresql.TempEventsRepository
 import server.db.postgresql.entities.SimpleCommand
-import server.handlers.AnyHandler
+import server.handlers.AnyCommandHandler
 import server.observers.ObserverCard
 
 @Component
 class CardUpdateNameCommandHandler @Autowired constructor(observerCard: ObserverCard,
                                                           private val cardEventsRepository: CardEventsRepository,
                                                           private val tempEventsRepository: TempEventsRepository)
-    : AnyHandler<CardEventRes>(cardEventsRepository) {
+    : AnyCommandHandler<CardEventRes>(cardEventsRepository) {
     init {
         attach(observerCard)
     }

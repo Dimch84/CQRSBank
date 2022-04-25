@@ -10,23 +10,31 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import client.api.requests.sendToUrl
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import server.commands.card.CardCreateCommand
 import server.commands.card.CardUpdateNameCommand
+import server.queries.card.CardByIdQuery
 
 // TODO(not hardcode http://localhost:8080)
 @RestController
 @Api(description = "cards operations cqrs")
 class CardsControllerCQRS {
+    companion object {
+        private val GSON = Gson()
+    }
     private val log: Logger = LoggerFactory.getLogger(CardsControllerCQRS::class.java)
 
-//    @ApiOperation(value = "Return card")
-//    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
-//    @GetMapping("/cards/{id}")
-//    suspend fun getCardsById(@PathVariable id: Int): CardBody {
-//        log.info("GET Response: /cards/${id}")
-//        return Card(id).data
-//    }
-//
+    @ApiOperation(value = "Return card")
+    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
+    @GetMapping("/cqrs/cards/{id}")
+    suspend fun getCardsById(@PathVariable id: Long): CardBody {
+        log.info("GET Response: /cqrs/cards/${id}")
+        val query = CardByIdQuery(id)
+        val cardJson = sendToUrl("http://localhost:8080/cardsCommands/byId", query.toMap())
+        return GSON.fromJson(cardJson, object : TypeToken<CardBody>() {}.type)
+    }
+
 //    @ApiOperation(value = "Return card history")
 //    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
 //    @GetMapping("/cards/{id}/history")
