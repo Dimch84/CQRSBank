@@ -1,6 +1,5 @@
 package client.api
 
-//import client.api.abstractions.UserProfileBody
 import client.api.abstractions.UserProfileBody
 import config.Application
 import client.postgresql.*
@@ -44,7 +43,6 @@ class UserTest {
         assert(user.accounts.isEmpty())
         createAccount()
         assert(user.accounts.size == 1)
-//        assert(user.accounts.first().plan == simplePlan.name)
         assert(user.accounts.first().money == 1000)
     }
 }

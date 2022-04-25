@@ -10,7 +10,6 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -23,12 +22,6 @@ class CardTest {
     private lateinit var account1: Account
     private val db = DbSettings.db
     private var first = true
-
-    companion object {
-        @BeforeAll
-        @JvmStatic
-        internal fun beforeAll() {}  // TODO(not work)
-    }
 
     private fun standardInit() {
         if (first) {

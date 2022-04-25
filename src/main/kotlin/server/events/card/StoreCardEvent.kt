@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken
 import server.events.AnyStore
 import javax.persistence.AttributeConverter
 import javax.persistence.Converter
-import server.events.card.TypeCardEvent.*
 
 
 data class StoreCardEvent(val cardEvent: CardEvent, val type: TypeCardEvent): AnyStore {

@@ -1,6 +1,5 @@
 package client.api.common
 
-import client.api.abstractions.AccountBody
 import client.api.abstractions.CardBody
 import client.api.abstractions.UserProfileBody
 import client.api.requests.sendToUrl
@@ -8,7 +7,6 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import client.domain.Card
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.slf4j.Logger

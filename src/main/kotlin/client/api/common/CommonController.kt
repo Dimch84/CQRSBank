@@ -2,7 +2,6 @@ package client.api.common
 
 import client.api.abstractions.AccountBody
 import client.api.abstractions.CardBody
-import client.api.abstractions.RegisterBody
 import client.api.abstractions.UserProfileBody
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation

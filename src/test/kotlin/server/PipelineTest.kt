@@ -1,7 +1,6 @@
 package server
 
 import client.api.abstractions.CardBody
-import client.api.cards.CardsControllerCQRS
 import client.api.requests.RequestType
 import client.api.requests.sendToUrl
 import com.google.gson.Gson
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import server.db.mongo.CardRepository
 import server.db.postgresql.CardEventsRepository

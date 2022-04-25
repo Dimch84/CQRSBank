@@ -7,6 +7,7 @@ import server.commands.user.UserDeleteCommand
 import server.commands.user.UserUpdateProfileCommand
 import java.lang.reflect.Type
 
+
 enum class TypeCommand {
     CARD_CREATE_COMMAND,
     CARD_UPDATE_NAME_COMMAND,

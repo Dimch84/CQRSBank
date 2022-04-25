@@ -2,7 +2,6 @@ package server.commands.user
 
 import server.commands.Command
 import server.events.command.TypeCommand
-import server.events.user.UserCreateEvent
 import server.events.user.UserDeleteEvent
 
 class UserDeleteCommand(val login: String=""): Command {

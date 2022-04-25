@@ -1,5 +1,3 @@
-#GET http://localhost:8080/register/my_login
-
 ###
 POST http://localhost:8080/cqrs/cards
 Content-Type: application/json
