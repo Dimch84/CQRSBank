@@ -40,7 +40,7 @@ class ServerTest @Autowired constructor(private val cardEventsRepository: CardEv
     fun some2Test() {
         val command = CardCreateCommand("name", "type", 1)
         println("command1 reply ${service.send(command)}")
-        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "id" to account_id) } ==
+        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "id" to accountId) } ==
                 mapOf("name" to "name", "type" to "type", "id" to 1))
     }
 
@@ -51,7 +51,7 @@ class ServerTest @Autowired constructor(private val cardEventsRepository: CardEv
         println("command1 reply: $id")
         val command2 = CardUpdateNameCommand("name2", id)
         println("command2 reply: ${service.send(command2)}")
-        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "id" to account_id) } ==
+        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "id" to accountId) } ==
                 mapOf("name" to "name2", "type" to "type", "id" to 1))
     }
 }

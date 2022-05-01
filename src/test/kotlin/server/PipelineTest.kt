@@ -40,7 +40,7 @@ class PipelineTest @Autowired constructor(private val cardEventsRepository: Card
         assert(card.toMap() == mapOf("name" to "name", "type" to "type", "account_id" to 1))
         val command2Reply = sendToUrl("http://localhost:8080/cqrs/cards/2/updateName", mapOf("name" to "name2"))
         println("command2 reply: $command2Reply")
-        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "id" to account_id) } ==
+        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "id" to accountId) } ==
                 mapOf("name" to "name2", "type" to "type", "id" to 1))
     }
 }

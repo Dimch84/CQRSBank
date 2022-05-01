@@ -43,6 +43,6 @@ class UserTest {
         assert(user.accounts.isEmpty())
         createAccount()
         assert(user.accounts.size == 1)
-        assert(user.accounts.first().money == 1000)
+        assert(user.accounts.first().money == 1000L)
     }
 }

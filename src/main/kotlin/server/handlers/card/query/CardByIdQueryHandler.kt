@@ -11,7 +11,7 @@ import server.queries.card.CardQuery
 class CardByIdQueryHandler @Autowired constructor(private val cardRepository: CardRepository)
         : AnyQueryHandler<CardQuery>() {
     override fun handle(query: CardQuery): String {
-        val card = cardRepository.findById(query.id).get().run { CardBody(name, type, account_id) }
+        val card = cardRepository.findById(query.id).get().run { CardBody(name, type, accountId) }
         return GSON.toJson(card)
     }
 }

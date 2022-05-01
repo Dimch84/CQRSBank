@@ -11,6 +11,13 @@ import server.events.command.StoreCommand
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import server.events.command.TypeCommand.*
+import server.handlers.account.command.AccountCreateCommandHandler
+import server.handlers.account.command.AccountDeleteCommandHandler
+import server.handlers.account.command.AccountUpdatePlanCommandHandler
+import server.handlers.account.query.AccountAllQueryHandler
+import server.handlers.account.query.AccountByIdCardsQueryHandler
+import server.handlers.account.query.AccountByIdMoneyQueryHandler
+import server.handlers.account.query.AccountByIdQueryHandler
 import server.handlers.card.command.*
 import server.handlers.card.query.CardAllQueryHandler
 import server.handlers.card.query.CardByIdHistoryQueryHandler
@@ -22,6 +29,10 @@ import server.handlers.user.query.UserAllQueryHandler
 import server.handlers.user.query.UserByLoginAccountsQueryHandler
 import server.handlers.user.query.UserByLoginQueryHandler
 import server.queries.Query
+import server.queries.account.AccountAllQuery
+import server.queries.account.AccountCardsQuery
+import server.queries.account.AccountMoneyQuery
+import server.queries.account.AccountQuery
 import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardQuery
@@ -46,7 +57,15 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
                                             private val userDeleteCommandHandler: UserDeleteCommandHandler,
                                             private val userByLoginQueryHandler: UserByLoginQueryHandler,
                                             private val userByLoginAccountsQueryHandler: UserByLoginAccountsQueryHandler,
-                                            private val userAllQueryHandler: UserAllQueryHandler) {
+                                            private val userAllQueryHandler: UserAllQueryHandler,
+
+                                            private val accountCreateCommandHandler: AccountCreateCommandHandler,
+                                            private val accountUpdatePlanCommandHandler: AccountUpdatePlanCommandHandler,
+                                            private val accountDeleteCommandHandler: AccountDeleteCommandHandler,
+                                            private val accountAllQueryHandler: AccountAllQueryHandler,
+                                            private val accountByIdCardsQueryHandler: AccountByIdCardsQueryHandler,
+                                            private val accountByIdMoneyQueryHandler: AccountByIdMoneyQueryHandler,
+                                            private val accountByIdQueryHandler: AccountByIdQueryHandler) {
     private val executorService = Executors.newFixedThreadPool(10)
     private val log: Logger = LoggerFactory.getLogger(CommandService::class.java)
 
@@ -63,6 +82,10 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
             USER_CREATE_COMMAND -> userCreateCommandHandler.handle(simpleCommand)
             USER_UPDATE_PROFILE_COMMAND -> userUpdateProfileCommandHandler.handle(simpleCommand)
             USER_DELETE_COMMAND -> userDeleteCommandHandler.handle(simpleCommand)
+
+            ACCOUNT_CREATE_COMMAND -> accountCreateCommandHandler.handle(simpleCommand)
+            ACCOUNT_UPDATE_PLAN_COMMAND -> accountUpdatePlanCommandHandler.handle(simpleCommand)
+            ACCOUNT_DELETE_COMMAND -> accountDeleteCommandHandler.handle(simpleCommand)
         }
     } catch (ex: Exception) {
         log.error(ex.message)
@@ -84,6 +107,12 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
             is UserQuery -> userByLoginQueryHandler.handle(query)
             is UserAccountsQuery -> userByLoginAccountsQueryHandler.handle(query)
             is UserAllQuery -> userAllQueryHandler.handle(query)
+
+            is AccountQuery -> accountByIdQueryHandler.handle(query)
+            is AccountCardsQuery -> accountByIdCardsQueryHandler.handle(query)
+            is AccountMoneyQuery -> accountByIdMoneyQueryHandler.handle(query)
+            is AccountAllQuery -> accountAllQueryHandler.handle(query)
+
             else -> throw Exception("wrong query")
         }
     } catch (ex: Exception) {

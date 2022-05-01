@@ -15,15 +15,15 @@ class User {
 
     val accounts: List<AccountBody>
         get() = transaction { getUser().run { Account.find { Accounts.user_id eq id.value } }
-            .map { acc -> AccountBody(acc.user_id.id.value, acc.plan.id.value, acc.money) }
+            .map { acc -> AccountBody(acc.user_id.id.value.toLong(), acc.plan.id.value.toLong(), acc.money.toLong()) }
         }
 
     private fun getUser() = client.postgresql.User.find { Users.login eq userLogin }.also { assert(it.count() == 1L) }.first()
 
     fun post(userProfileBody: UserProfileBody) = transaction {
         getUser().run {
-            userProfileBody.name?.let { name=userProfileBody.name }
-            userProfileBody.login?.let { login=userProfileBody.login }
+            userProfileBody.name.let { name=userProfileBody.name }
+            userProfileBody.login.let { login=userProfileBody.login }
             userProfileBody.phone?.let { phone=userProfileBody.phone }
             userProfileBody.email?.let { email=userProfileBody.email }
         }
