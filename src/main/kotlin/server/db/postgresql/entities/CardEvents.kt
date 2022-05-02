@@ -2,6 +2,7 @@ package server.db.postgresql.entities
 
 import server.abstractions.card.CardDeleteEventRes
 import server.abstractions.card.CardEventRes
+import server.abstractions.card.CardHistoryRes
 import server.events.card.*
 import server.events.card.TypeCardEvent.*
 import server.exceptions.DeleteException
@@ -41,6 +42,9 @@ class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
         }
     }
 
+    private val history: List<CardEvent>
+        get() = events.map { it.cardEvent }
+
     fun update(event: CardCreateEvent, add: Boolean = true): CardEventRes {
         val curId = id
         eventRes.apply { name=event.name; type=event.type; accountId=event.accountId; id=curId }
@@ -67,6 +71,10 @@ class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
     fun update(event: CardDeleteEvent): CardDeleteEventRes {
         events.add(StoreCardEvent(event, CARD_DELETE_EVENT))
         return CardDeleteEventRes(id)
+    }
+
+    fun update(event: CardHistoryEvent): CardHistoryRes {
+        return CardHistoryRes(history)
     }
 
     override fun update() = eventRes

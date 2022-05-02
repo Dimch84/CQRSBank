@@ -19,6 +19,7 @@ enum class TypeCommand {
     CARD_TRANSFER_COMMAND,
     CARD_RECEIPT_COMMAND,
     CARD_DELETE_COMMAND,
+    CARD_HISTORY_COMMAND,
 
     USER_CREATE_COMMAND,
     USER_UPDATE_PROFILE_COMMAND,
@@ -31,20 +32,21 @@ enum class TypeCommand {
 
     val commandType: Type
         get() = when(this) {
-            CARD_CREATE_COMMAND -> object : TypeToken<CardCreateCommand>() {}.type
-            CARD_UPDATE_NAME_COMMAND -> object : TypeToken<CardUpdateNameCommand>() {}.type
-            CARD_PAY_COMMAND -> object : TypeToken<CardPayCommand>() {}.type
-            CARD_TRANSFER_COMMAND -> object : TypeToken<CardTransferCommand>() {}.type
-            CARD_RECEIPT_COMMAND -> object : TypeToken<CardReceiptCommand>() {}.type
-            CARD_DELETE_COMMAND -> object : TypeToken<CardDeleteCommand>() {}.type
+            CARD_CREATE_COMMAND         -> object : TypeToken<CardCreateCommand>() {}.type
+            CARD_UPDATE_NAME_COMMAND    -> object : TypeToken<CardUpdateNameCommand>() {}.type
+            CARD_PAY_COMMAND            -> object : TypeToken<CardPayCommand>() {}.type
+            CARD_TRANSFER_COMMAND       -> object : TypeToken<CardTransferCommand>() {}.type
+            CARD_RECEIPT_COMMAND        -> object : TypeToken<CardReceiptCommand>() {}.type
+            CARD_DELETE_COMMAND         -> object : TypeToken<CardDeleteCommand>() {}.type
+            CARD_HISTORY_COMMAND        -> object : TypeToken<CardHistoryCommand>() {}.type
 
-            USER_CREATE_COMMAND -> object : TypeToken<UserCreateCommand>() {}.type
+            USER_CREATE_COMMAND         -> object : TypeToken<UserCreateCommand>() {}.type
             USER_UPDATE_PROFILE_COMMAND -> object : TypeToken<UserUpdateProfileCommand>() {}.type
-            USER_DELETE_COMMAND -> object : TypeToken<UserDeleteCommand>() {}.type
+            USER_DELETE_COMMAND         -> object : TypeToken<UserDeleteCommand>() {}.type
 
-            ACCOUNT_CREATE_COMMAND -> object : TypeToken<AccountCreateCommand>() {}.type
+            ACCOUNT_CREATE_COMMAND      -> object : TypeToken<AccountCreateCommand>() {}.type
             ACCOUNT_UPDATE_PLAN_COMMAND -> object : TypeToken<AccountUpdatePlanCommand>() {}.type
-            ACCOUNT_UPDATE_MONEY_COMMAND -> object : TypeToken<AccountUpdateMoneyCommand>() {}.type
-            ACCOUNT_DELETE_COMMAND -> object : TypeToken<AccountDeleteCommand>() {}.type
+            ACCOUNT_UPDATE_MONEY_COMMAND-> object : TypeToken<AccountUpdateMoneyCommand>() {}.type
+            ACCOUNT_DELETE_COMMAND      -> object : TypeToken<AccountDeleteCommand>() {}.type
         }
 }

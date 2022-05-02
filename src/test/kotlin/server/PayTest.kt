@@ -14,9 +14,8 @@ import server.db.mongo.AccountRepository
 import server.db.mongo.CardRepository
 import server.db.postgresql.AccountEventsRepository
 import server.db.postgresql.CardEventsRepository
-import server.events.card.CardCreateEvent
-import server.db.postgresql.entities.CardEvents
 import server.queries.account.AccountMoneyQuery
+import server.queries.card.CardHistoryQuery
 
 
 @ExtendWith(SpringExtension::class)
@@ -48,7 +47,7 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
 
     fun getMoney(accountId: Long) =
         AccountMoneyQuery(accountId).run {
-            service.send(this)!!.toLong()
+            service.send(this)!!
                 .also { println("account with id=$accountId, money: $it") }
         }
 
@@ -68,6 +67,12 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
         CardTransferCommand(money, cardId).run {
             println("card with id=$cardId: transfer $money")
             service.send(this)
+        }
+
+    fun history(cardId: Long) =
+        CardHistoryQuery(cardId).run {
+            println("card with id=$cardId history: ${
+                (service.send(this) as List<*>).joinToString(prefix = "\n", separator = ",\n")}")
         }
 
     @Test
@@ -99,7 +104,7 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
     }
 
     @Test
-    fun operationsTest() {
+    fun operationsAndHistoryTest() {
         val accountId = createAccount(100)
         val cardId1 = createCard("card1", accountId)
         val cardId2 = createCard("card2", accountId)
@@ -115,5 +120,8 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
         assert(pay(cardId1, 5) != "ok")
         assert(pay(cardId1, 4) == "ok")
         assert(getMoney(accountId) == 0L)
+
+        history(cardId1)
+        history(cardId2)
     }
 }

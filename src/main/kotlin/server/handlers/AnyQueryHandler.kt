@@ -7,5 +7,5 @@ abstract class AnyQueryHandler<T: Query> {
     companion object {
         val GSON = Gson()
     }
-    abstract fun handle(query: T): String
+    abstract fun handle(query: T): Any
 }

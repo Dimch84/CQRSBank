@@ -9,5 +9,5 @@ import server.queries.account.AccountMoneyQuery
 @Component
 class AccountByIdMoneyQueryHandler @Autowired constructor(private val accountRepository: AccountRepository)
         : AnyQueryHandler<AccountMoneyQuery>() {
-    override fun handle(query: AccountMoneyQuery) = accountRepository.findById(query.id).get().money.toString()
+    override fun handle(query: AccountMoneyQuery) = accountRepository.findById(query.id).get().money
 }
