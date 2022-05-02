@@ -32,7 +32,7 @@ class RegisterTest {
         val register = Register(login)
         val registerBody = RegisterBody("my_name", "my_pass")
         val id = register.post(registerBody)
-        assert(id == 1)
+        assert(id == 1L)
         assert(register.data.name == registerBody.name)
         assert(Register(login).data.name == registerBody.name)
         assertThrows<Exception> { register.post(registerBody) }

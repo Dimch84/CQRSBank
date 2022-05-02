@@ -4,8 +4,8 @@ import server.commands.Command
 import server.events.command.TypeCommand
 import server.events.user.UserUpdateProfileEvent
 
-class UserUpdateProfileCommand(val name: String="", val login: String="", val phone: String? = null,
-                               val email: String? = null): Command {
+class UserUpdateProfileCommand(val name: String?=null, val login: String?=null, val phone: String?=null,
+                               val email: String?=null): Command {
     val event: UserUpdateProfileEvent
         get() = UserUpdateProfileEvent(name, login, phone, email)
 

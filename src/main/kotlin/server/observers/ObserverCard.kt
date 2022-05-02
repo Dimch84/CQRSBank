@@ -12,7 +12,7 @@ import server.db.mongo.entities.CardEntity
 class ObserverCard @Autowired constructor(private val cardRepository: CardRepository): AnyObserver<AnyCardEventRes> {
     override fun update(res: AnyCardEventRes): Unit = when(res) {
         is CardEventRes -> {
-            cardRepository.save(CardEntity(res.id!!, res.name!!, res.type!!, res.account_id!!))
+            cardRepository.save(CardEntity(res.id!!, res.name!!, res.type!!, res.accountId!!))
             Unit
         }
         is CardDeleteEventRes -> {

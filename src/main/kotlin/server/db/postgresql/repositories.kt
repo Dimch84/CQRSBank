@@ -16,7 +16,7 @@ interface CardEventsRepository : JpaRepository<CardEvents, Long>
 
 @Repository
 interface UserEventsRepository : JpaRepository<UserEvents, Long> {
-    fun findByLoginEnd(login: String): UserEvents?
+    fun findByLoginEnd(login: String?): UserEvents?
 }
 
 @Repository

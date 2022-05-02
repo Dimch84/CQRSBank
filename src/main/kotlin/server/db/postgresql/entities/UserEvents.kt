@@ -37,9 +37,9 @@ class UserEvents: DomainEvents<StoreUserEvent, UserEventRes> {
             initial = false
             events.forEach {
                 when (it.type) {
-                    USER_CREATE_EVENT -> update(it.userEvent as UserCreateEvent, add = false)
-                    USER_UPDATE_PROFILE_EVENT -> update(it.userEvent as UserUpdateProfileEvent, add = false)
-                    USER_DELETE_EVENT -> throw DeleteException("user with login=${(it.userEvent as 
+                    USER_CREATE_EVENT           -> update(it.userEvent as UserCreateEvent, add = false)
+                    USER_UPDATE_PROFILE_EVENT   -> update(it.userEvent as UserUpdateProfileEvent, add = false)
+                    USER_DELETE_EVENT           -> throw DeleteException("user with login=${(it.userEvent as 
                             UserDeleteEvent).login} was deleted")
                 }
             }

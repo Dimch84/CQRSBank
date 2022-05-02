@@ -4,9 +4,9 @@ import server.commands.Command
 import server.events.command.TypeCommand
 import server.events.user.UserDeleteEvent
 
-class UserDeleteCommand(val login: String=""): Command {
+class UserDeleteCommand(val login: String?=null): Command {
     val event: UserDeleteEvent
-        get() = UserDeleteEvent(login)
+        get() = UserDeleteEvent(login!!)
 
     override val typeCommand: TypeCommand
         get() = TypeCommand.USER_DELETE_COMMAND

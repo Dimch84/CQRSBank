@@ -4,9 +4,9 @@ import server.commands.Command
 import server.events.account.AccountCreateEvent
 import server.events.command.TypeCommand
 
-class AccountCreateCommand(val money: Long=0, val userId: Long=-1, val planId: Long=-1): Command {
+class AccountCreateCommand(val money: Long?=null, val userId: Long?=null, val planId: Long?=null): Command {
     val event: AccountCreateEvent
-        get() = AccountCreateEvent(money, userId, planId)
+        get() = AccountCreateEvent(money!!, userId!!, planId!!)
 
     override val typeCommand: TypeCommand
         get() = TypeCommand.ACCOUNT_CREATE_COMMAND

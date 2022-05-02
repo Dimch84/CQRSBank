@@ -20,7 +20,7 @@ class AccountsController {
     @ApiOperation(value = "Return account")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/accounts/{id}")
-    suspend fun getAccountsById(@PathVariable id: Int): AccountBody {
+    suspend fun getAccountsById(@PathVariable id: Long): AccountBody {
         log.info("GET Response: /accounts/${id}")
         return Account(id).data
     }
@@ -28,7 +28,7 @@ class AccountsController {
     @ApiOperation(value = "Return account money")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/accounts/{id}/money")
-    suspend fun getAccountsMoneyById(@PathVariable id: Int): Long {
+    suspend fun getAccountsMoneyById(@PathVariable id: Long): Long {
         log.info("GET Response: /accounts/${id}/money")
         return Account(id).data.money
     }
@@ -36,7 +36,7 @@ class AccountsController {
     @ApiOperation(value = "Return account cards")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/accounts/{id}/cards")
-    suspend fun getAccountsCardsById(@PathVariable id: Int): List<CardBody> {
+    suspend fun getAccountsCardsById(@PathVariable id: Long): List<CardBody> {
         log.info("GET Response: /accounts/${id}/cards")
         return Account(id).cards
     }
@@ -44,7 +44,7 @@ class AccountsController {
     @ApiOperation(value = "Add account")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @PostMapping("/accounts")
-    suspend fun postAccounts(@RequestBody accountBody: AccountBody): Int {
+    suspend fun postAccounts(@RequestBody accountBody: AccountBody): Long {
         log.info("POST Response: /accounts")
         return Account().post(accountBody)
     }
@@ -52,7 +52,7 @@ class AccountsController {
     @ApiOperation(value = "Update account plan")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @PostMapping("/accounts/{id}")
-    suspend fun postAccountsById(@PathVariable id: Int, @RequestBody planBody: PlanBody): Int {
+    suspend fun postAccountsById(@PathVariable id: Long, @RequestBody planBody: PlanBody): Long {
         log.info("POST Response: /accounts/${id}")
         return Account(id).updatePlan(planBody.planId)
     }
@@ -60,7 +60,7 @@ class AccountsController {
     @ApiOperation(value = "Delete account")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @DeleteMapping("/accounts/{id}")
-    suspend fun deleteAccountsById(@PathVariable id: Int) {
+    suspend fun deleteAccountsById(@PathVariable id: Long) {
         log.info("DELETE Response: /accounts/${id}")
         return Account(id).delete()
     }

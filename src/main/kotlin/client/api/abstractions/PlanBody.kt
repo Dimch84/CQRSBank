@@ -1,3 +1,5 @@
 package client.api.abstractions
 
-data class PlanBody(val planId: Long=-1)
+import client.secondary.NULL
+
+data class PlanBody(val planId: Long=NULL)

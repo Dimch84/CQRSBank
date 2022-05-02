@@ -30,8 +30,8 @@ class UserTest {
         }
     }
 
-    private fun createAccount(userId: Int = dbUser.id.value, initPlan : Plan = simplePlan, initMoney : Int = 1000) {
-        return transaction { Account.new { user_id = DBUser.findById(userId)!!; plan = initPlan; money = initMoney } }
+    private fun createAccount(userId: Long = dbUser.id.value, initPlan : Plan = simplePlan, initMoney : Long = 1000L) {
+        return transaction { Account.new { this.userId = DBUser.findById(userId)!!; planId = initPlan; money = initMoney } }
     }
 
     @Test

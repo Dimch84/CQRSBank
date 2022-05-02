@@ -31,11 +31,11 @@ class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
             initial = false
             events.forEach {
                 when (it.type) {
-                    CARD_CREATE_EVENT -> update(it.cardEvent as CardCreateEvent, add = false)
-                    CARD_UPDATE_NAME_EVENT -> update(it.cardEvent as CardUpdateNameEvent, add = false)
-                    CARD_PAY_EVENT -> update(it.cardEvent as CardPayEvent, add = false)
-                    CARD_TRANSFER_EVENT -> update(it.cardEvent as CardTransferEvent, add = false)
-                    CARD_DELETE_EVENT -> throw DeleteException("card with id=${(it.cardEvent as CardDeleteEvent).id} was deleted")
+                    CARD_CREATE_EVENT       -> update(it.cardEvent as CardCreateEvent, add = false)
+                    CARD_UPDATE_NAME_EVENT  -> update(it.cardEvent as CardUpdateNameEvent, add = false)
+                    CARD_PAY_EVENT          -> update(it.cardEvent as CardPayEvent, add = false)
+                    CARD_TRANSFER_EVENT     -> update(it.cardEvent as CardTransferEvent, add = false)
+                    CARD_DELETE_EVENT       -> throw DeleteException("card with id=${(it.cardEvent as CardDeleteEvent).id} was deleted")
                 }
             }
         }
@@ -43,7 +43,7 @@ class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
 
     fun update(event: CardCreateEvent, add: Boolean = true): CardEventRes {
         val curId = id
-        eventRes.apply { name=event.name; type=event.type; account_id=event.account_id; id=curId }
+        eventRes.apply { name=event.name; type=event.type; accountId=event.accountId; id=curId }
         if (add) events.add(StoreCardEvent(event, CARD_CREATE_EVENT))
         return eventRes
     }

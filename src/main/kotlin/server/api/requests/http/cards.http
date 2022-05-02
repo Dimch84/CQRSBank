@@ -5,7 +5,7 @@ Content-Type: application/json
 {
   "name": "name",
   "type": "type",
-  "account_id": 1
+  "accountId": 1
 }
 
 ###

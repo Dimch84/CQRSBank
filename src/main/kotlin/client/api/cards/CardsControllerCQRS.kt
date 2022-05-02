@@ -4,6 +4,9 @@ import client.api.abstractions.CardBody
 import client.api.abstractions.PaymentBody
 import client.api.abstractions.TransferBody
 import client.api.abstractions.UpdateName
+import client.api.requests.sendToUrl
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
@@ -11,9 +14,6 @@ import io.swagger.annotations.ApiResponses
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
-import client.api.requests.sendToUrl
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import server.commands.card.*
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardQuery
@@ -35,8 +35,9 @@ class CardsControllerCQRS {
         val query = CardQuery(id)
         val cardJson = sendToUrl("http://localhost:8080/cardsCommands/byId", query.toMap())
         return try {
-            val card: CardBody = GSON.fromJson(cardJson, object : TypeToken<CardBody>() {}.type)
-            card.toString()
+            cardJson    // for test only
+//            val card: CardBody = GSON.fromJson(cardJson, object : TypeToken<CardBody>() {}.type)
+//            card.toString()
         } catch (ex: Exception) {
             cardJson
         }
@@ -58,7 +59,7 @@ class CardsControllerCQRS {
     @PostMapping("/cqrs/cards")
     suspend fun postCards(@RequestBody cardBody: CardBody): String {
         log.info("POST Response: /cqrs/cards")
-        val command = CardCreateCommand(cardBody.name, cardBody.type, cardBody.account_id)
+        val command = CardCreateCommand(cardBody.name, cardBody.type, cardBody.accountId)
         return sendToUrl("http://localhost:8080/cardsCommands/create", command.toMap())
     }
 

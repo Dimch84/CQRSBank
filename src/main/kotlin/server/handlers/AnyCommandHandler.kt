@@ -1,8 +1,8 @@
 package server.handlers
 
 import server.abstractions.Res
-import server.observers.AnyObserver
 import server.db.postgresql.entities.SimpleCommand
+import server.observers.AnyObserver
 
 abstract class AnyCommandHandler<R : Res> {
     private val anyObservers = mutableListOf<AnyObserver<R>>()

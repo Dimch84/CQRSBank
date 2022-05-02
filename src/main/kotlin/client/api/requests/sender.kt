@@ -1,11 +1,12 @@
 package client.api.requests
 
+import client.api.requests.RequestType.GET
+import client.api.requests.RequestType.POST
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import client.api.requests.RequestType.*
 
 fun sendToUrl(url: String, data: Map<String, Any?>, type: RequestType = POST): String {
     val con: HttpURLConnection = when(type) {

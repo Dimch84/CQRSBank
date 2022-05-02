@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import server.db.mongo.CardRepository
 import server.db.postgresql.CardEventsRepository
 
+// start it with main application
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [Application::class])
 class PipelineTest @Autowired constructor(private val cardEventsRepository: CardEventsRepository,
@@ -31,16 +32,17 @@ class PipelineTest @Autowired constructor(private val cardEventsRepository: Card
 
     @Test
     fun someTest() {
-        val id = sendToUrl("http://localhost:8080/cqrs/cards", mapOf("name" to "name", "type" to "type", "account_id" to 1)).toLong()
+        val id = sendToUrl("http://localhost:8080/cqrs/cards", mapOf("name" to "name", "type" to "type", "accountId" to 1L)).toLong()
         println("command1 reply: $id")
         val card: CardBody = sendToUrl("http://localhost:8080/cqrs/cards/${id}", mapOf(), RequestType.GET).run {
+            println(this)
             GSON.fromJson(this, object : TypeToken<CardBody>() {}.type)
         }
         println("query reply: $card")
-        assert(card.toMap() == mapOf("name" to "name", "type" to "type", "account_id" to 1))
-        val command2Reply = sendToUrl("http://localhost:8080/cqrs/cards/2/updateName", mapOf("name" to "name2"))
+        assert(card.toMap() == mapOf("name" to "name", "type" to "type", "accountId" to 1L))
+        val command2Reply = sendToUrl("http://localhost:8080/cqrs/cards/${id}/updateName", mapOf("name" to "name2"))
         println("command2 reply: $command2Reply")
-        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "id" to accountId) } ==
-                mapOf("name" to "name2", "type" to "type", "id" to 1))
+        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
+                mapOf("name" to "name2", "type" to "type", "accountId" to 1L))
     }
 }

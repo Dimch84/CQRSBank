@@ -29,7 +29,7 @@ class RegisterController {
         ApiResponse(code = 200, message = "Ok"),
         ApiResponse(code = 409, message = "Login already exist")])
     @PostMapping("/register/{login}")
-    suspend fun postRegisterLogin(@PathVariable login: String, @RequestBody registerBody: RegisterBody): Int {
+    suspend fun postRegisterLogin(@PathVariable login: String, @RequestBody registerBody: RegisterBody): Long {
         log.info("POST Response: /register/${login}")
         return Register(login).post(registerBody)
     }

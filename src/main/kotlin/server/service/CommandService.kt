@@ -8,8 +8,6 @@ import server.commands.Command
 import server.db.postgresql.TempEventsRepository
 import server.db.postgresql.entities.SimpleCommand
 import server.events.command.StoreCommand
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
 import server.events.command.TypeCommand.*
 import server.handlers.account.command.AccountCreateCommandHandler
 import server.handlers.account.command.AccountDeleteCommandHandler
@@ -39,6 +37,8 @@ import server.queries.card.CardQuery
 import server.queries.user.UserAccountsQuery
 import server.queries.user.UserAllQuery
 import server.queries.user.UserQuery
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 @Service
 class CommandService @Autowired constructor(private val tempEventsRepository: TempEventsRepository,
@@ -72,20 +72,20 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
     // TODO(optimize later)
     private fun handle(simpleCommand: SimpleCommand) = try {
         when (simpleCommand.store.type) {
-            CARD_CREATE_COMMAND -> cardCreateCommandHandler.handle(simpleCommand)
-            CARD_UPDATE_NAME_COMMAND -> cardUpdateNameCommandHandler.handle(simpleCommand)
-            CARD_PAY_COMMAND -> cardPayCommandHandler.handle(simpleCommand)
-            CARD_TRANSFER_COMMAND -> cardTransferCommandHandler.handle(simpleCommand)
-            CARD_RECEIPT_COMMAND -> cardReceiptCommandHandler.handle(simpleCommand)
-            CARD_DELETE_COMMAND -> cardDeleteCommandHandler.handle(simpleCommand)
+            CARD_CREATE_COMMAND         -> cardCreateCommandHandler.handle(simpleCommand)
+            CARD_UPDATE_NAME_COMMAND    -> cardUpdateNameCommandHandler.handle(simpleCommand)
+            CARD_PAY_COMMAND            -> cardPayCommandHandler.handle(simpleCommand)
+            CARD_TRANSFER_COMMAND       -> cardTransferCommandHandler.handle(simpleCommand)
+            CARD_RECEIPT_COMMAND        -> cardReceiptCommandHandler.handle(simpleCommand)
+            CARD_DELETE_COMMAND         -> cardDeleteCommandHandler.handle(simpleCommand)
 
-            USER_CREATE_COMMAND -> userCreateCommandHandler.handle(simpleCommand)
+            USER_CREATE_COMMAND         -> userCreateCommandHandler.handle(simpleCommand)
             USER_UPDATE_PROFILE_COMMAND -> userUpdateProfileCommandHandler.handle(simpleCommand)
-            USER_DELETE_COMMAND -> userDeleteCommandHandler.handle(simpleCommand)
+            USER_DELETE_COMMAND         -> userDeleteCommandHandler.handle(simpleCommand)
 
-            ACCOUNT_CREATE_COMMAND -> accountCreateCommandHandler.handle(simpleCommand)
+            ACCOUNT_CREATE_COMMAND      -> accountCreateCommandHandler.handle(simpleCommand)
             ACCOUNT_UPDATE_PLAN_COMMAND -> accountUpdatePlanCommandHandler.handle(simpleCommand)
-            ACCOUNT_DELETE_COMMAND -> accountDeleteCommandHandler.handle(simpleCommand)
+            ACCOUNT_DELETE_COMMAND      -> accountDeleteCommandHandler.handle(simpleCommand)
         }
     } catch (ex: Exception) {
         log.error(ex.message)
@@ -100,20 +100,20 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
 
     fun send(query: Query) = try {
         when (query) {
-            is CardQuery -> cardByIdQueryHandler.handle(query)
-            is CardHistoryQuery -> cardByIdHistoryQueryHandler.handle(query)
-            is CardAllQuery -> cardAllQueryHandler.handle(query)
+            is CardQuery            -> cardByIdQueryHandler.handle(query)
+            is CardHistoryQuery     -> cardByIdHistoryQueryHandler.handle(query)
+            is CardAllQuery         -> cardAllQueryHandler.handle(query)
 
-            is UserQuery -> userByLoginQueryHandler.handle(query)
-            is UserAccountsQuery -> userByLoginAccountsQueryHandler.handle(query)
-            is UserAllQuery -> userAllQueryHandler.handle(query)
+            is UserQuery            -> userByLoginQueryHandler.handle(query)
+            is UserAccountsQuery    -> userByLoginAccountsQueryHandler.handle(query)
+            is UserAllQuery         -> userAllQueryHandler.handle(query)
 
-            is AccountQuery -> accountByIdQueryHandler.handle(query)
-            is AccountCardsQuery -> accountByIdCardsQueryHandler.handle(query)
-            is AccountMoneyQuery -> accountByIdMoneyQueryHandler.handle(query)
-            is AccountAllQuery -> accountAllQueryHandler.handle(query)
+            is AccountQuery         -> accountByIdQueryHandler.handle(query)
+            is AccountCardsQuery    -> accountByIdCardsQueryHandler.handle(query)
+            is AccountMoneyQuery    -> accountByIdMoneyQueryHandler.handle(query)
+            is AccountAllQuery      -> accountAllQueryHandler.handle(query)
 
-            else -> throw Exception("wrong query")
+            else                    -> throw Exception("wrong query")
         }
     } catch (ex: Exception) {
         log.error(ex.message)

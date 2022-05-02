@@ -1,25 +1,29 @@
 package client.postgresql
 
-import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.TransactionManager
+import org.jetbrains.exposed.sql.transactions.transaction
 
-object Plans : IntIdTable() {
+object Plans : LongIdTable() {
     val name = varchar("name", 80)
     val description = varchar("description", 256)
 }
 
-class Plan(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Plan>(Plans)
+class Plan(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<Plan>(Plans)
 
     var name by Plans.name
     var description by Plans.description
 }
 
-object Users: IntIdTable() {
+object Users: LongIdTable() {
     val name = varchar("name", 80)
     val login = varchar("login", 40)
     val password = varchar("password", 40)
@@ -27,8 +31,8 @@ object Users: IntIdTable() {
     val email = varchar("email", 40).nullable()
 }
 
-class User(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<User>(Users)
+class User(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<User>(Users)
 
     var name by Users.name
     var login by Users.login
@@ -37,32 +41,32 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var email by Users.email
 }
 
-object Accounts: IntIdTable() {
-    val user_id = reference("user_id", Users)
-    val plan = reference("plan", Plans)
-    val money = integer("money")
+object Accounts: LongIdTable() {
+    val userId = reference("userId", Users)
+    val planId = reference("planId", Plans)
+    val money = long("money")
 }
 
-class Account(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Account>(Accounts)
+class Account(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<Account>(Accounts)
 
-    var user_id by User referencedOn Accounts.user_id
-    var plan by Plan referencedOn Accounts.plan
+    var userId by User referencedOn Accounts.userId
+    var planId by Plan referencedOn Accounts.planId
     var money by Accounts.money
 }
 
-object Cards: IntIdTable() {
+object Cards: LongIdTable() {
     val name = varchar("name", 80)
     val type = varchar("type", 80)
-    val account_id = reference("account_id", Accounts)
+    val accountId = reference("accountId", Accounts)
 }
 
-class Card(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Card>(Cards)
+class Card(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<Card>(Cards)
 
     var name by Cards.name
     var type by Cards.type
-    var account_id by Account referencedOn Cards.account_id
+    var accountId by Account referencedOn Cards.accountId
 }
 
 object DbSettings {
@@ -105,16 +109,16 @@ fun InitDatabase() {
         val user2 = User.new { name = "N"; login = "N"; password = "12345678"; phone = "3132131" }
         val user3 = User.new { name = "S"; login = "S"; password = "12345678"; phone = "2224412" }
 
-        val account1 = Account.new { user_id = user1; plan = simplePlan; money = 1000 }
-        val account2 = Account.new { user_id = user1; plan = vipPlan; money = 100000 }
-        val account3 = Account.new { user_id = user2; plan = simplePlan; money = 0 }
-        val account4 = Account.new { user_id = user3; plan = simplePlan; money = 1 }
+        val account1 = Account.new { userId = user1; planId = simplePlan; money = 1000 }
+        val account2 = Account.new { userId = user1; planId = vipPlan; money = 100000 }
+        val account3 = Account.new { userId = user2; planId = simplePlan; money = 0 }
+        val account4 = Account.new { userId = user3; planId = simplePlan; money = 1 }
 
-        Card.new { name =  "1234"; type = "Credit card"; account_id = account1 }
-        Card.new { name =  "1235"; type = "Credit card"; account_id = account2 }
-        Card.new { name =  "1236"; type = "Credit card"; account_id = account2 }
-        Card.new { name =  "1237"; type = "Credit card"; account_id = account3 }
-        Card.new { name =  "1238"; type = "Credit card"; account_id = account4 }
+        Card.new { name =  "1234"; type = "Credit card"; accountId = account1 }
+        Card.new { name =  "1235"; type = "Credit card"; accountId = account2 }
+        Card.new { name =  "1236"; type = "Credit card"; accountId = account2 }
+        Card.new { name =  "1237"; type = "Credit card"; accountId = account3 }
+        Card.new { name =  "1238"; type = "Credit card"; accountId = account4 }
     }
 }
 
