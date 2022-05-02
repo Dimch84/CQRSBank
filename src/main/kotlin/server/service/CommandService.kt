@@ -11,7 +11,6 @@ import server.events.command.StoreCommand
 import server.events.command.TypeCommand.*
 import server.handlers.account.command.AccountCreateCommandHandler
 import server.handlers.account.command.AccountDeleteCommandHandler
-import server.handlers.account.command.AccountUpdateMoneyCommandHandler
 import server.handlers.account.command.AccountUpdatePlanCommandHandler
 import server.handlers.account.query.AccountAllQueryHandler
 import server.handlers.account.query.AccountByIdCardsQueryHandler
@@ -62,7 +61,6 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
 
                                             private val accountCreateCommandHandler: AccountCreateCommandHandler,
                                             private val accountUpdatePlanCommandHandler: AccountUpdatePlanCommandHandler,
-                                            private val accountUpdateMoneyCommandHandler: AccountUpdateMoneyCommandHandler,
                                             private val accountDeleteCommandHandler: AccountDeleteCommandHandler,
                                             private val accountAllQueryHandler: AccountAllQueryHandler,
                                             private val accountByIdCardsQueryHandler: AccountByIdCardsQueryHandler,

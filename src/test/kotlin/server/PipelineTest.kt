@@ -12,37 +12,51 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import server.db.mongo.AccountRepository
 import server.db.mongo.CardRepository
+import server.db.mongo.UserRepository
+import server.db.postgresql.AccountEventsRepository
 import server.db.postgresql.CardEventsRepository
+import server.db.postgresql.UserEventsRepository
 
 // start it with main application
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [Application::class])
 class PipelineTest @Autowired constructor(private val cardEventsRepository: CardEventsRepository,
-                                        private val cardRepository: CardRepository) {
+                                          private val accountEventsRepository: AccountEventsRepository,
+                                          private val userEventsRepository: UserEventsRepository,
+                                          private val cardRepository: CardRepository,
+                                          private val accountRepository: AccountRepository,
+                                          private val userRepository: UserRepository) {
     companion object {
         private val GSON = Gson()
     }
 
     @BeforeEach
     fun clearDB() {
-        cardRepository.deleteAll()
         cardEventsRepository.deleteAll()
+        accountEventsRepository.deleteAll()
+        userEventsRepository.deleteAll()
+        cardRepository.deleteAll()
+        accountRepository.deleteAll()
+        userRepository.deleteAll()
     }
 
     @Test
     fun someTest() {
-        val id = sendToUrl("http://localhost:8080/cqrs/cards", mapOf("name" to "name", "type" to "type", "accountId" to 1L)).toLong()
+        val userId = sendToUrl("http://localhost:8080/cqrs/register/login", mapOf("name" to "name", "password" to "pass")).toLong()
+        val accountIdCur = sendToUrl("http://localhost:8080/cqrs/accounts", mapOf("money" to 0, "userId" to userId, "planId" to 1L)).toLong()
+        val id = sendToUrl("http://localhost:8080/cqrs/cards", mapOf("name" to "name", "type" to "type", "accountId" to accountIdCur)).toLong()
         println("command1 reply: $id")
         val card: CardBody = sendToUrl("http://localhost:8080/cqrs/cards/${id}", mapOf(), RequestType.GET).run {
             println(this)
             GSON.fromJson(this, object : TypeToken<CardBody>() {}.type)
         }
         println("query reply: $card")
-        assert(card.toMap() == mapOf("name" to "name", "type" to "type", "accountId" to 1L))
+        assert(card.toMap() == mapOf("name" to "name", "type" to "type", "accountId" to accountIdCur))
         val command2Reply = sendToUrl("http://localhost:8080/cqrs/cards/${id}/updateName", mapOf("name" to "name2"))
         println("command2 reply: $command2Reply")
         assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
-                mapOf("name" to "name2", "type" to "type", "accountId" to 1L))
+                mapOf("name" to "name2", "type" to "type", "accountId" to accountIdCur))
     }
 }

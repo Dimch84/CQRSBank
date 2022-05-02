@@ -9,11 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import server.commands.account.AccountCreateCommand
 import server.commands.card.*
+import server.commands.user.UserCreateCommand
 import server.service.CommandService
 import server.db.mongo.AccountRepository
 import server.db.mongo.CardRepository
+import server.db.mongo.UserRepository
 import server.db.postgresql.AccountEventsRepository
 import server.db.postgresql.CardEventsRepository
+import server.db.postgresql.UserEventsRepository
 import server.queries.account.AccountMoneyQuery
 import server.queries.card.CardHistoryQuery
 
@@ -22,26 +25,36 @@ import server.queries.card.CardHistoryQuery
 @SpringBootTest(classes = [Application::class])
 class PayTest @Autowired constructor(private val cardEventsRepository: CardEventsRepository,
                                      private val accountEventsRepository: AccountEventsRepository,
+                                     private val userEventsRepository: UserEventsRepository,
                                      private val cardRepository: CardRepository,
                                      private val accountRepository: AccountRepository,
+                                     private val userRepository: UserRepository,
                                      private val service: CommandService) {
     @BeforeEach
     fun clearDB() {
         cardEventsRepository.deleteAll()
         accountEventsRepository.deleteAll()
+        userEventsRepository.deleteAll()
         cardRepository.deleteAll()
         accountRepository.deleteAll()
+        userRepository.deleteAll()
     }
+
+    fun createUser(name: String, login: String="login", password: String="pass") =
+        UserCreateCommand(name, login, password).run {
+            println("create user: ${toMap()}")
+            service.send(this) as Long
+        }
+
+    fun createAccount(money: Long, userId: Long, planId: Long=1) =
+        AccountCreateCommand(money, userId, planId).run {
+            println("create account: ${toMap()}")
+            service.send(this) as Long
+        }
 
     fun createCard(name: String, accountId: Long, type: String="type") =
         CardCreateCommand(name, type, accountId).run {
             println("create card: ${toMap()}")
-            service.send(this) as Long
-        }
-
-    fun createAccount(money: Long, userId: Long=1, planId: Long=1) =
-        AccountCreateCommand(money, userId, planId).run {
-            println("create account: ${toMap()}")
             service.send(this) as Long
         }
 
@@ -77,7 +90,8 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
 
     @Test
     fun simpleTest() {
-        val accountId = createAccount(100)
+        val userId = createUser("user")
+        val accountId = createAccount(100, userId)
         val cardId1 = createCard("card1", accountId)
         val cardId2 = createCard("card2", accountId)
         var money = getMoney(accountId)
@@ -91,7 +105,8 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
 
     @Test
     fun payMoreTest() {
-        val accountId = createAccount(100)
+        val userId = createUser("user")
+        val accountId = createAccount(100, userId)
         val cardId1 = createCard("card1", accountId)
         var money = getMoney(accountId)
         assert(money == 100L)
@@ -105,7 +120,8 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
 
     @Test
     fun operationsAndHistoryTest() {
-        val accountId = createAccount(100)
+        val userId = createUser("user")
+        val accountId = createAccount(100, userId)
         val cardId1 = createCard("card1", accountId)
         val cardId2 = createCard("card2", accountId)
         assert(getMoney(accountId) == 100L)

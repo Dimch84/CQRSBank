@@ -12,49 +12,65 @@ import server.service.CommandService
 import server.commands.card.CardCreateCommand
 import server.commands.card.CardPayCommand
 import server.commands.card.CardUpdateNameCommand
+import server.commands.user.UserCreateCommand
+import server.db.mongo.AccountRepository
 import server.db.mongo.CardRepository
+import server.db.mongo.UserRepository
+import server.db.postgresql.AccountEventsRepository
 import server.db.postgresql.CardEventsRepository
+import server.db.postgresql.UserEventsRepository
 import server.events.card.CardCreateEvent
 import server.db.postgresql.entities.CardEvents
 import server.queries.account.AccountMoneyQuery
 
-
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [Application::class])
 class ServerTest @Autowired constructor(private val cardEventsRepository: CardEventsRepository,
+                                        private val accountEventsRepository: AccountEventsRepository,
+                                        private val userEventsRepository: UserEventsRepository,
                                         private val cardRepository: CardRepository,
+                                        private val accountRepository: AccountRepository,
+                                        private val userRepository: UserRepository,
                                         private val service: CommandService) {
     @BeforeEach
     fun clearDB() {
-        cardRepository.deleteAll()
         cardEventsRepository.deleteAll()
+        accountEventsRepository.deleteAll()
+        userEventsRepository.deleteAll()
+        cardRepository.deleteAll()
+        accountRepository.deleteAll()
+        userRepository.deleteAll()
+        val userId = service.send(UserCreateCommand("name", "login", "password")) as Long
+        accountIdCur = service.send(AccountCreateCommand(0, userId, 1)) as Long
     }
+
+    private var accountIdCur: Long = 0
 
     @Test
     fun some1Test() {
-        cardEventsRepository.save(CardEvents().also { it.update(CardCreateEvent("name", "type", 1)) })
+        cardEventsRepository.save(CardEvents().also { it.update(CardCreateEvent("name", "type", accountIdCur)) })
         val result = cardEventsRepository.findAll().first()
         result.initEvents()
         assert(result.update().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
-                mapOf("name" to "name", "type" to "type", "accountId" to 1L))
+                mapOf("name" to "name", "type" to "type", "accountId" to accountIdCur))
     }
 
     @Test
     fun some2Test() {
-        val command = CardCreateCommand("name", "type", 1)
+        val command = CardCreateCommand("name", "type", accountIdCur)
         println("command1 reply ${service.send(command)}")
         assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
-                mapOf("name" to "name", "type" to "type", "accountId" to 1L))
+                mapOf("name" to "name", "type" to "type", "accountId" to accountIdCur))
     }
 
     @Test
     fun some3Test() {
-        val command1 = CardCreateCommand("name", "type", 1)
+        val command1 = CardCreateCommand("name", "type", accountIdCur)
         val id = service.send(command1) as Long
         println("command1 reply: $id")
         val command2 = CardUpdateNameCommand("name2", id)
         println("command2 reply: ${service.send(command2)}")
         assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
-                mapOf("name" to "name2", "type" to "type", "accountId" to 1L))
+                mapOf("name" to "name2", "type" to "type", "accountId" to accountIdCur))
     }
 }
