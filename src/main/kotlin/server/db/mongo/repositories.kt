@@ -18,4 +18,6 @@ interface UserRepository : MongoRepository<UserEntity, Long> {
 }
 
 @Repository
-interface AccountRepository : MongoRepository<AccountEntity, Long>
+interface AccountRepository : MongoRepository<AccountEntity, Long> {
+    fun findAllByUserId(userId: Long): List<AccountEntity>
+}

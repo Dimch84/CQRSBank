@@ -55,13 +55,11 @@ class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
     }
 
     fun update(event: CardPayEvent, add: Boolean = true): CardEventRes {
-        // TODO
         if (add) events.add(StoreCardEvent(event, CARD_PAY_EVENT))
         return eventRes
     }
 
     fun update(event: CardTransferEvent, add: Boolean = true): CardEventRes {
-        // TODO
         if (add) events.add(StoreCardEvent(event, CARD_TRANSFER_EVENT))
         return eventRes
     }

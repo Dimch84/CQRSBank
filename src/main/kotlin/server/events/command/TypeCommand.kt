@@ -3,6 +3,7 @@ package server.events.command
 import com.google.gson.reflect.TypeToken
 import server.commands.account.AccountCreateCommand
 import server.commands.account.AccountDeleteCommand
+import server.commands.account.AccountUpdateMoneyCommand
 import server.commands.account.AccountUpdatePlanCommand
 import server.commands.card.*
 import server.commands.user.UserCreateCommand
@@ -25,6 +26,7 @@ enum class TypeCommand {
 
     ACCOUNT_CREATE_COMMAND,
     ACCOUNT_UPDATE_PLAN_COMMAND,
+    ACCOUNT_UPDATE_MONEY_COMMAND,
     ACCOUNT_DELETE_COMMAND;
 
     val commandType: Type
@@ -42,6 +44,7 @@ enum class TypeCommand {
 
             ACCOUNT_CREATE_COMMAND -> object : TypeToken<AccountCreateCommand>() {}.type
             ACCOUNT_UPDATE_PLAN_COMMAND -> object : TypeToken<AccountUpdatePlanCommand>() {}.type
+            ACCOUNT_UPDATE_MONEY_COMMAND -> object : TypeToken<AccountUpdateMoneyCommand>() {}.type
             ACCOUNT_DELETE_COMMAND -> object : TypeToken<AccountDeleteCommand>() {}.type
         }
 }

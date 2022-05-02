@@ -2,10 +2,7 @@ package server.db.postgresql.entities
 
 import server.abstractions.account.AccountDeleteEventRes
 import server.abstractions.account.AccountEventRes
-import server.events.account.AccountCreateEvent
-import server.events.account.AccountDeleteEvent
-import server.events.account.AccountUpdatePlanEvent
-import server.events.account.StoreAccountEvent
+import server.events.account.*
 import server.events.account.TypeAccountEvent.*
 import server.exceptions.DeleteException
 import javax.persistence.*
@@ -36,6 +33,7 @@ class AccountEvents: DomainEvents<StoreAccountEvent, AccountEventRes> {
                 when (it.type) {
                     ACCOUNT_CREATE_EVENT        -> update(it.accountEvent as AccountCreateEvent, add = false)
                     ACCOUNT_UPDATE_PLAN_EVENT   -> update(it.accountEvent as AccountUpdatePlanEvent, add = false)
+                    ACCOUNT_UPDATE_MONEY_EVENT  -> update(it.accountEvent as AccountUpdateMoneyEvent, add = false)
                     ACCOUNT_DELETE_EVENT        -> throw DeleteException("account with id=${(it.accountEvent as AccountDeleteEvent).id} was deleted")
                 }
             }
@@ -52,6 +50,16 @@ class AccountEvents: DomainEvents<StoreAccountEvent, AccountEventRes> {
     fun update(event: AccountUpdatePlanEvent, add: Boolean = true): AccountEventRes {
         eventRes.apply { planId=event.planId }
         if (add) events.add(StoreAccountEvent(event, ACCOUNT_UPDATE_PLAN_EVENT))
+        return eventRes
+    }
+
+    fun update(event: AccountUpdateMoneyEvent, add: Boolean = true): AccountEventRes {
+        eventRes.apply {
+            if (money!! - event.money < 0)
+                throw Exception("You have only ${money!!}, you cannot pay ${event.money}")
+            money = money!! - event.money
+        }
+        if (add) events.add(StoreAccountEvent(event, ACCOUNT_UPDATE_MONEY_EVENT))
         return eventRes
     }
 

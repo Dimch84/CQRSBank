@@ -11,6 +11,7 @@ import server.events.command.StoreCommand
 import server.events.command.TypeCommand.*
 import server.handlers.account.command.AccountCreateCommandHandler
 import server.handlers.account.command.AccountDeleteCommandHandler
+import server.handlers.account.command.AccountUpdateMoneyCommandHandler
 import server.handlers.account.command.AccountUpdatePlanCommandHandler
 import server.handlers.account.query.AccountAllQueryHandler
 import server.handlers.account.query.AccountByIdCardsQueryHandler
@@ -61,6 +62,7 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
 
                                             private val accountCreateCommandHandler: AccountCreateCommandHandler,
                                             private val accountUpdatePlanCommandHandler: AccountUpdatePlanCommandHandler,
+                                            private val accountUpdateMoneyCommandHandler: AccountUpdateMoneyCommandHandler,
                                             private val accountDeleteCommandHandler: AccountDeleteCommandHandler,
                                             private val accountAllQueryHandler: AccountAllQueryHandler,
                                             private val accountByIdCardsQueryHandler: AccountByIdCardsQueryHandler,
@@ -69,8 +71,7 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
     private val executorService = Executors.newFixedThreadPool(10)
     private val log: Logger = LoggerFactory.getLogger(CommandService::class.java)
 
-    // TODO(optimize later)
-    private fun handle(simpleCommand: SimpleCommand) = try {
+    private fun handle(simpleCommand: SimpleCommand, catch: Boolean=true) = try {
         when (simpleCommand.store.type) {
             CARD_CREATE_COMMAND         -> cardCreateCommandHandler.handle(simpleCommand)
             CARD_UPDATE_NAME_COMMAND    -> cardUpdateNameCommandHandler.handle(simpleCommand)
@@ -86,8 +87,12 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
             ACCOUNT_CREATE_COMMAND      -> accountCreateCommandHandler.handle(simpleCommand)
             ACCOUNT_UPDATE_PLAN_COMMAND -> accountUpdatePlanCommandHandler.handle(simpleCommand)
             ACCOUNT_DELETE_COMMAND      -> accountDeleteCommandHandler.handle(simpleCommand)
+
+            else -> Exception("command ${simpleCommand.store.type} not permitted")
         }
     } catch (ex: Exception) {
+        if (!catch)
+            throw ex
         log.error(ex.message)
         ex.message
     }

@@ -7,13 +7,16 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import server.commands.account.AccountCreateCommand
 import server.service.CommandService
 import server.commands.card.CardCreateCommand
+import server.commands.card.CardPayCommand
 import server.commands.card.CardUpdateNameCommand
 import server.db.mongo.CardRepository
 import server.db.postgresql.CardEventsRepository
 import server.events.card.CardCreateEvent
 import server.db.postgresql.entities.CardEvents
+import server.queries.account.AccountMoneyQuery
 
 
 @ExtendWith(SpringExtension::class)
@@ -28,7 +31,7 @@ class ServerTest @Autowired constructor(private val cardEventsRepository: CardEv
     }
 
     @Test
-    fun someTest() {
+    fun some1Test() {
         cardEventsRepository.save(CardEvents().also { it.update(CardCreateEvent("name", "type", 1)) })
         val result = cardEventsRepository.findAll().first()
         result.initEvents()
