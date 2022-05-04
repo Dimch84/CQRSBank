@@ -1,0 +1,24 @@
+version: "3.3"
+services:
+  postgres:
+    container_name: PostgresCqrs
+    image: postgres
+    environment:
+      POSTGRES_DB: "cqrs"
+      POSTGRES_USER: "cqrs"
+      POSTGRES_PASSWORD: "cqrs"
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
+  mongodb:
+    container_name: mongoCqrs
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME="cqrs"
+      - MONGO_INITDB_ROOT_PASSWORD="cqrs"
+    volumes:
+      - ~/apps/mongo:/data/db
+    ports:
+      - "27017:27017"
