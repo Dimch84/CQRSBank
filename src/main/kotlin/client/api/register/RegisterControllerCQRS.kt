@@ -19,6 +19,7 @@ import server.queries.user.UserQuery
 
 @RestController
 @Api(description = "for register users")
+@CrossOrigin(origins = ["http://localhost:8081", "http://172.20.10.13:8081"])
 class RegisterControllerCQRS {
     companion object {
         private val GSON = Gson()

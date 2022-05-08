@@ -17,6 +17,7 @@ import server.queries.user.UserAllQuery
 
 @RestController
 @Api(description = "common debug operations")
+@CrossOrigin(origins = ["http://localhost:8081", "http://172.20.10.13:8081"])
 class CommonControllerCQRS {
     companion object {
         private val GSON = Gson()

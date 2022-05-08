@@ -1,6 +1,7 @@
 package config
 
 import client.postgresql.DbSettings
+import client.postgresql.InitDatabase
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
@@ -26,6 +27,9 @@ import server.db.postgresql.*
 class Application
 
 fun main(args: Array<String>) {
-    TransactionManager.defaultDatabase = DbSettings.db
+    InitDatabase()
+
+
+//    TransactionManager.defaultDatabase = DbSettings.db
     runApplication<Application>(*args)
 }
