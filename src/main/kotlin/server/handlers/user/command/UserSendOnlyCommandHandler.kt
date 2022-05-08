@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import server.abstractions.user.AnyUserEventRes
 import server.commands.SendOnlyCommand
-import server.commands.user.UserUpdateProfileCommand
-import server.db.postgresql.TempEventsRepository
 import server.db.postgresql.UserEventsRepository
 import server.db.postgresql.entities.SimpleCommand
 import server.observers.ObserverUser

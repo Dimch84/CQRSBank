@@ -3,7 +3,6 @@ package client.api.accounts
 import client.api.abstractions.AccountBody
 import client.api.abstractions.CardBody
 import client.api.abstractions.PlanBody
-import client.api.common.CommonControllerCQRS
 import client.api.requests.sendToUrl
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

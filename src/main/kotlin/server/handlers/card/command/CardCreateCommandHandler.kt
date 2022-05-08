@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import server.abstractions.card.AnyCardEventRes
 import server.commands.card.CardCreateCommand
-import server.commands.card.CardLocalTransferCommand
 import server.db.mongo.AccountRepository
 import server.db.postgresql.CardEventsRepository
 import server.db.postgresql.TempEventsRepository

@@ -65,10 +65,6 @@ tasks.test {
     useJUnitPlatform()
 }
 
-//allOpen {
-//    annotation("server.db.postgresql.entities.CardEvents")
-//}
-
 tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
     kotlinOptions.jvmTarget = "11"

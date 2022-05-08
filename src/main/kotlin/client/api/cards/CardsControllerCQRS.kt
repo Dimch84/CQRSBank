@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import server.abstractions.card.HistoryMode
 import server.commands.card.*
-import server.queries.card.CardMoneyQuery
 import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
+import server.queries.card.CardMoneyQuery
 import server.queries.card.CardQuery
 
 // TODO(not hardcode http://localhost:8080)

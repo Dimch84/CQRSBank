@@ -37,32 +37,4 @@ class CommonControllerCQRS {
             listOf()
         }
     }
-
-//    @ApiOperation(value = "Return all accounts for user")
-//    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
-//    @GetMapping("/cqrs/common/accounts/all")
-//    suspend fun getCommonAccountsAll(): List<AccountBody> {
-//        log.info("GET Response: /cqrs/common/accounts/all")
-//        val query = AccountAllQuery()
-//        val accountsJson = sendToUrl("http://localhost:8080/accountsCommands/all", query.toMap())
-//        return try {
-//            GSON.fromJson(accountsJson, object : TypeToken<List<AccountBody>>() {}.type)
-//        } catch (ex: Exception) {
-//            listOf()
-//        }
-//    }
-
-//    @ApiOperation(value = "Return all cards for user")
-//    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
-//    @GetMapping("/cqrs/common/cards/all")
-//    suspend fun getCommonCardsAll(): List<CardBody> {
-//        log.info("GET Response: /cqrs/common/cards/all")
-//        val query = CardAllQuery()
-//        val cardsJson = sendToUrl("http://localhost:8080/cardsCommands/all", query.toMap())
-//        return try {
-//            GSON.fromJson(cardsJson, object : TypeToken<List<CardBody>>() {}.type)
-//        } catch (ex: Exception) {
-//            listOf()
-//        }
-//    }
 }

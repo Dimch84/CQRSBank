@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional
 import server.abstractions.card.AnyCardEventRes
 import server.commands.SendOnlyCommand
 import server.commands.account.AccountUpdateMoneyCommand
-import server.commands.card.CardPayCommand
 import server.commands.card.CardReceiptCommand
 import server.db.postgresql.CardEventsRepository
 import server.db.postgresql.TempEventsRepository

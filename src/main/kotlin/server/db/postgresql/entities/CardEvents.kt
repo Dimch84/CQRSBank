@@ -3,7 +3,8 @@ package server.db.postgresql.entities
 import server.abstractions.card.CardDeleteEventRes
 import server.abstractions.card.CardEventRes
 import server.abstractions.card.CardHistoryRes
-import server.abstractions.card.HistoryMode.*
+import server.abstractions.card.HistoryMode.FULL
+import server.abstractions.card.HistoryMode.PAYS
 import server.events.card.*
 import server.events.card.TypeCardEvent.*
 import server.exceptions.DeleteException

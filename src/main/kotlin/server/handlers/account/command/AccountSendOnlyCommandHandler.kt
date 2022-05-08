@@ -2,10 +2,8 @@ package server.handlers.account.command
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import server.abstractions.account.AnyAccountEventRes
 import server.commands.SendOnlyCommand
-import server.commands.account.AccountUpdateMoneyCommand
 import server.db.postgresql.AccountEventsRepository
 import server.db.postgresql.entities.SimpleCommand
 import server.observers.ObserverAccount
