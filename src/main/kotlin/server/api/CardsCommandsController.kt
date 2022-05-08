@@ -11,6 +11,7 @@ import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardMoneyQuery
 import server.queries.card.CardQuery
+import server.queries.card.CardQueryByNumber
 import server.service.CommandService
 
 @RestController
@@ -20,6 +21,11 @@ class CardsCommandsController @Autowired constructor(private val service: Comman
     @PostMapping("/cardsCommands/byId")
     suspend fun getCardsByIdQuery(@RequestBody cardByIdQuery: CardQuery) =
         service.send(cardByIdQuery)
+
+    @ApiOperation(value = "Get card by number")
+    @PostMapping("/cardsCommands/byNumber")
+    suspend fun postCardsByIdQuery(@RequestBody cardByNumberQuery: CardQueryByNumber) =
+        service.send(cardByNumberQuery)
 
     @ApiOperation(value = "Get card history")
     @PostMapping("/cardsCommands/byIdHistory")

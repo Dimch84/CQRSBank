@@ -23,6 +23,7 @@ import server.handlers.card.query.CardAllQueryHandler
 import server.handlers.card.query.CardByIdHistoryQueryHandler
 import server.handlers.card.query.CardByIdMoneyQueryHandler
 import server.handlers.card.query.CardByIdQueryHandler
+import server.handlers.card.query.CardByNumberQueryHandler
 import server.handlers.user.command.UserCreateCommandHandler
 import server.handlers.user.command.UserDeleteCommandHandler
 import server.handlers.user.command.UserUpdateProfileCommandHandler
@@ -41,6 +42,7 @@ import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardMoneyQuery
 import server.queries.card.CardQuery
+import server.queries.card.CardQueryByNumber
 import server.queries.user.UserAccountsQuery
 import server.queries.user.UserAllQuery
 import server.queries.user.UserQuery
@@ -59,6 +61,7 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
                                             private val cardDeleteCommandHandler: CardDeleteCommandHandler,
 
                                             private val cardByIdQueryHandler: CardByIdQueryHandler,
+                                            private val cardByNumberQueryHandler: CardByNumberQueryHandler,
                                             private val cardByIdHistoryQueryHandler: CardByIdHistoryQueryHandler,
                                             private val cardByIdMoneyQueryHandler: CardByIdMoneyQueryHandler,
                                             private val cardAllQueryHandler: CardAllQueryHandler,
@@ -137,6 +140,7 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
     fun send(query: Query) = try {
         when (query) {
             is CardQuery            -> cardByIdQueryHandler.handle(query)
+            is CardQueryByNumber    -> cardByNumberQueryHandler.handle(query)
             is CardHistoryQuery     -> cardByIdHistoryQueryHandler.handle(query)
             is CardMoneyQuery       -> cardByIdMoneyQueryHandler.handle(query)
             is CardAllQuery         -> cardAllQueryHandler.handle(query)

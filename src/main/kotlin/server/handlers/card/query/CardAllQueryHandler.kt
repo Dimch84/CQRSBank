@@ -20,7 +20,7 @@ class CardAllQueryHandler @Autowired constructor(private val cardRepository: Car
             .map { it.id }
             .map { cardRepository.findByAccountId(it) }
             .flatten()
-            .map { CardBody(it.name, it.type, it.accountId) }
+            .map { CardBody(it.id, it.name, it.type, it.accountId, it.cardNumber, it.expDate, it.cvv) }
         return GSON.toJson(cards)
     }
 }

@@ -18,6 +18,7 @@ import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardMoneyQuery
 import server.queries.card.CardQuery
+import server.queries.card.CardQueryByNumber
 
 // TODO(not hardcode http://localhost:8080)
 @RestController
@@ -53,6 +54,20 @@ class CardsControllerCQRS {
         log.info("GET Response: /cqrs/cards/${id}/money")
         val query = CardMoneyQuery(id, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/byIdMoney", query.toMap())
+    }
+
+    @ApiOperation(value = "Return card by name")
+    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
+    @GetMapping("/cqrs/cards/byNumber/{cardNumber}")
+    suspend fun getCardsById(@PathVariable cardNumber: String): String {  // CardBody
+        log.info("GET Response: /cqrs/cards/byNumber${cardNumber}")
+        val query = CardQueryByNumber(cardNumber)
+        val cardJson = sendToUrl("http://localhost:8080/cardsCommands/byNumber", query.toMap())
+        return try {
+            cardJson
+        } catch (ex: Exception) {
+            cardJson
+        }
     }
 
     @ApiOperation(value = "Return card history")
@@ -94,7 +109,7 @@ class CardsControllerCQRS {
     @PostMapping("/cqrs/cards")
     suspend fun postCards(@RequestBody cardBody: CardBody): String {
         log.info("POST Response: /cqrs/cards")
-        val command = CardCreateCommand(cardBody.name, cardBody.type, cardBody.accountId, userLogin)
+        val command = CardCreateCommand(cardBody.name, cardBody.type, cardBody.accountId, cardBody.cardNumber, cardBody.expDate, cardBody.cvv)
         return sendToUrl("http://localhost:8080/cardsCommands/create", command.toMap())
     }
 

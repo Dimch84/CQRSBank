@@ -46,19 +46,19 @@ class ServerTest @Autowired constructor(private val cardEventsRepository: CardEv
 
     @Test
     fun some1Test() {
-        cardEventsRepository.save(CardEvents().also { it.update(CardCreateEvent("name", "type", accountIdCur, "admin")) })
+        cardEventsRepository.save(CardEvents().also { it.update(CardCreateEvent("name", "type", accountIdCur, "0000 0000 0000 0000", "03/30", "000")) })
         val result = cardEventsRepository.findAll().first()
         result.initEvents()
-        assert(result.update().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
-                mapOf("name" to "name", "type" to "type", "accountId" to accountIdCur))
+        assert(result.update().run { mapOf("name" to name, "type" to type, "accountId" to accountId, "cardNumber" to cardNumber, "expDate" to expDate, "cvv" to cvv) } ==
+                mapOf("name" to "name", "type" to "type", "accountId" to accountIdCur, "cardNumber" to "0000 0000 0000 0000", "expDate" to "03/30", "cvv" to "000"))
     }
 
     @Test
     fun some2Test() {
         val command = CardCreateCommand("name", "type", accountIdCur)
         println("command1 reply ${service.send(command)}")
-        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
-                mapOf("name" to "name", "type" to "type", "accountId" to accountIdCur))
+        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId, "cardNumber" to cardNumber, "expDate" to expDate, "cvv" to cvv) } ==
+                mapOf("name" to "name", "type" to "type", "accountId" to accountIdCur, "cardNumber" to "0000 0000 0000 0000", "expDate" to "03/30", "cvv" to "000"))
     }
 
     @Test
@@ -68,7 +68,7 @@ class ServerTest @Autowired constructor(private val cardEventsRepository: CardEv
         println("command1 reply: $id")
         val command2 = CardUpdateNameCommand("name2", id)
         println("command2 reply: ${service.send(command2)}")
-        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
-                mapOf("name" to "name2", "type" to "type", "accountId" to accountIdCur))
+        assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId, "cardNumber" to cardNumber, "expDate" to expDate, "cvv" to cvv) } ==
+                mapOf("name" to "name2", "type" to "type", "accountId" to accountIdCur, "cardNumber" to "0000 0000 0000 0000", "expDate" to "03/30", "cvv" to "000"))
     }
 }

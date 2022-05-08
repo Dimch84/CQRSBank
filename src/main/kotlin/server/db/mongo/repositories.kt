@@ -10,6 +10,7 @@ import server.db.mongo.entities.UserEntity
 @Repository
 interface CardRepository : MongoRepository<CardEntity, Long> {
     fun findByAccountId(id: Long): List<CardEntity>
+    fun findByCardNumber(number: String): List<CardEntity>
 }
 
 @Repository

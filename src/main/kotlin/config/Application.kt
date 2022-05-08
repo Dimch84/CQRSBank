@@ -11,10 +11,18 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 import server.db.elasticsearch.UserInfoRepository
+import server.db.postgresql.*
+import org.springframework.stereotype.Component
+import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import server.db.mongo.AccountRepository
 import server.db.mongo.CardRepository
 import server.db.mongo.UserRepository
-import server.db.postgresql.*
+import server.db.postgresql.AccountEventsRepository
+import server.db.postgresql.CardEventsRepository
+import server.db.postgresql.TempEventsRepository
+import server.db.postgresql.UserEventsRepository
+import springfox.documentation.swagger2.annotations.EnableSwagger2
+>>>>>>> simple business logic for the front
 
 
 @SpringBootApplication

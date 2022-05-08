@@ -9,7 +9,7 @@ class Card(private var id: Long? = null) {
     private val userLogin = "admin"     //: String by lazy { SecurityContextHolder.getContext().authentication.name }
 
     val data: CardBody
-        get() = id?.let { id -> transaction { client.postgresql.Card.findById(id)?.run { CardBody(name, type, accountId.id.value) } } }
+        get() = id?.let { id -> transaction { client.postgresql.Card.findById(id)?.run { CardBody(id, name, type, accountId.id.value, cardNumber, expDate, cvv) } } }
             ?: throw Exception("wrong card id")
 
     val history: Any
@@ -17,7 +17,13 @@ class Card(private var id: Long? = null) {
 
     fun post(cardBody: CardBody): Long = transaction {
             client.postgresql.Account.findById(cardBody.accountId)?.let { accountId ->
-                client.postgresql.Card.new { name = cardBody.name; type = cardBody.type; this.accountId = accountId }
+                client.postgresql.Card.new { name = cardBody.name
+                    type = cardBody.type
+                    this.accountId = accountId
+                    cardNumber = cardBody.cardNumber
+                    expDate = cardBody.expDate
+                    cvv = cardBody.cvv
+                }
             }?.id?.value ?: throw Exception("wrong account id")
         }.also { id = it }
 
