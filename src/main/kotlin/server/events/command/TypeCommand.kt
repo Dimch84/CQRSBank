@@ -18,6 +18,7 @@ enum class TypeCommand {
     CARD_PAY_COMMAND,
     CARD_TRANSFER_COMMAND,
     CARD_RECEIPT_COMMAND,
+    CARD_LOCAL_TRANSFER_COMMAND,
     CARD_DELETE_COMMAND,
     CARD_HISTORY_COMMAND,
 
@@ -28,7 +29,9 @@ enum class TypeCommand {
     ACCOUNT_CREATE_COMMAND,
     ACCOUNT_UPDATE_PLAN_COMMAND,
     ACCOUNT_UPDATE_MONEY_COMMAND,
-    ACCOUNT_DELETE_COMMAND;
+    ACCOUNT_DELETE_COMMAND,
+
+    SEND_ONLY_COMMAND;
 
     val commandType: Type
         get() = when(this) {
@@ -37,6 +40,7 @@ enum class TypeCommand {
             CARD_PAY_COMMAND            -> object : TypeToken<CardPayCommand>() {}.type
             CARD_TRANSFER_COMMAND       -> object : TypeToken<CardTransferCommand>() {}.type
             CARD_RECEIPT_COMMAND        -> object : TypeToken<CardReceiptCommand>() {}.type
+            CARD_LOCAL_TRANSFER_COMMAND -> object : TypeToken<CardLocalTransferCommand>() {}.type
             CARD_DELETE_COMMAND         -> object : TypeToken<CardDeleteCommand>() {}.type
             CARD_HISTORY_COMMAND        -> object : TypeToken<CardHistoryCommand>() {}.type
 
@@ -48,5 +52,7 @@ enum class TypeCommand {
             ACCOUNT_UPDATE_PLAN_COMMAND -> object : TypeToken<AccountUpdatePlanCommand>() {}.type
             ACCOUNT_UPDATE_MONEY_COMMAND-> object : TypeToken<AccountUpdateMoneyCommand>() {}.type
             ACCOUNT_DELETE_COMMAND      -> object : TypeToken<AccountDeleteCommand>() {}.type
+
+            SEND_ONLY_COMMAND           -> throw Exception("not exist command type")
         }
 }

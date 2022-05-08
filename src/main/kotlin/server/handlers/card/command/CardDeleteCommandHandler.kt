@@ -2,6 +2,8 @@ package server.handlers.card.command
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Isolation
+import org.springframework.transaction.annotation.Transactional
 import server.abstractions.card.AnyCardEventRes
 import server.commands.card.CardDeleteCommand
 import server.db.postgresql.CardEventsRepository
@@ -18,13 +20,14 @@ class CardDeleteCommandHandler @Autowired constructor(observerCard: ObserverCard
         attach(observerCard)
     }
 
+    @Transactional(rollbackFor = [Exception::class], isolation = Isolation.SERIALIZABLE)
     override fun handle(simpleCommand: SimpleCommand): String {
-        val command = simpleCommand.store.command as CardDeleteCommand
-        cardEvents(command.id).run {
-            val cardUpd = update(command.event)
+        val event = (simpleCommand.store.command as CardDeleteCommand).event
+        cardEvents(event.id).run {
+            val cardUpd = update(event)
             cardEventsRepository.save(this)
-            send(cardUpd)
             tempEventsRepository.deleteById(simpleCommand.id!!)
+            send(cardUpd)
         }
         return "ok"
     }

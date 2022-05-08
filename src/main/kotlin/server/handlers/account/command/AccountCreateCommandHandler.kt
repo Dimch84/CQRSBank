@@ -2,6 +2,8 @@ package server.handlers.account.command
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Isolation
+import org.springframework.transaction.annotation.Transactional
 import server.abstractions.account.AnyAccountEventRes
 import server.commands.account.AccountCreateCommand
 import server.db.mongo.UserRepository
@@ -20,16 +22,18 @@ class AccountCreateCommandHandler @Autowired constructor(observerAccount: Observ
         attach(observerAccount)
     }
 
+    @Transactional(rollbackFor = [Exception::class], isolation = Isolation.SERIALIZABLE)
     override fun handle(simpleCommand: SimpleCommand): Long {
-        val command = simpleCommand.store.command as AccountCreateCommand
-        if (userRepository.findById(command.event.userId).isEmpty)
+        val event = (simpleCommand.store.command as AccountCreateCommand).event
+        if (userRepository.findById(event.userId).isEmpty)
             throw Exception("wrong user id")
         return accountEvents().run {
-            val accountUpd = update(command.event)
+            val accountUpd = update(event)
             accountEventsRepository.save(this)
-            send(accountUpd)
             tempEventsRepository.deleteById(simpleCommand.id!!)
-            id ?: throw Exception("AccountCreateCommandHandler id error")
+            val idRet = id ?: throw Exception("AccountCreateCommandHandler id error")
+            send(accountUpd)
+            idRet
         }
     }
 }

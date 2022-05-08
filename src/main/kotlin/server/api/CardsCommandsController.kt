@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import server.commands.card.*
+import server.queries.card.CardMoneyQuery
 import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardQuery
@@ -29,6 +30,11 @@ class CardsCommandsController @Autowired constructor(private val service: Comman
     @PostMapping("/cardsCommands/all")
     suspend fun postCardsAllQuery(@RequestBody cardAllQuery: CardAllQuery) =
         service.send(cardAllQuery)
+
+    @ApiOperation(value = "Get card money")
+    @PostMapping("/cardsCommands/byIdMoney")
+    suspend fun getCardsMoneyByIdQuery(@RequestBody cardByIdMoneyQuery: CardMoneyQuery) =
+        service.send(cardByIdMoneyQuery)
 
     //
 
@@ -56,6 +62,11 @@ class CardsCommandsController @Autowired constructor(private val service: Comman
     @PostMapping("/cardsCommands/receipt")
     suspend fun postCardsReceipt(@RequestBody cardReceiptCommand: CardReceiptCommand) =
         service.send(cardReceiptCommand)
+
+    @ApiOperation(value = "Transfer between own cards, return 'ok'")
+    @PostMapping("/cardsCommands/localTransfer")
+    suspend fun postCardsLocalTransfer(@RequestBody cardLocalTransferCommand: CardLocalTransferCommand) =
+        service.send(cardLocalTransferCommand)
 
     @ApiOperation(value = "Delete card, return 'ok'")
     @PostMapping("/cardsCommands/delete")

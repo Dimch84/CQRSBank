@@ -2,6 +2,8 @@ package server.handlers.account.command
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Isolation
+import org.springframework.transaction.annotation.Transactional
 import server.abstractions.account.AnyAccountEventRes
 import server.commands.account.AccountDeleteCommand
 import server.db.postgresql.AccountEventsRepository
@@ -18,13 +20,14 @@ class AccountDeleteCommandHandler @Autowired constructor(observerAccount: Observ
         attach(observerAccount)
     }
 
+    @Transactional(rollbackFor = [Exception::class], isolation = Isolation.SERIALIZABLE)
     override fun handle(simpleCommand: SimpleCommand): String {
-        val command = simpleCommand.store.command as AccountDeleteCommand
-        accountEvents(command.id).run {
-            val accountUpd = update(command.event)
+        val event = (simpleCommand.store.command as AccountDeleteCommand).event
+        accountEvents(event.id).run {
+            val accountUpd = update(event)
             accountEventsRepository.save(this)
-            send(accountUpd)
             tempEventsRepository.deleteById(simpleCommand.id!!)
+            send(accountUpd)
         }
         return "ok"
     }

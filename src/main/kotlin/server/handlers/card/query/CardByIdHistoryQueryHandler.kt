@@ -14,7 +14,7 @@ import server.queries.card.CardHistoryQuery
 class CardByIdHistoryQueryHandler @Autowired constructor(private val cardHistoryCommandHandler: CardHistoryCommandHandler)
         : AnyQueryHandler<CardHistoryQuery>() {
     override fun handle(query: CardHistoryQuery): List<CardEvent> {
-        val command = CardHistoryCommand(query.id)
+        val command = CardHistoryCommand(query.id, query.mode)
         return cardHistoryCommandHandler.handle(SimpleCommand(StoreCommand(command, command.typeCommand))).history
     }
 }

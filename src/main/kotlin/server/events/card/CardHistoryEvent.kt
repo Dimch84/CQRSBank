@@ -1,3 +1,5 @@
 package server.events.card
 
-data class CardHistoryEvent(val id: Long) : CardEvent
+import server.abstractions.card.HistoryMode
+
+data class CardHistoryEvent(val id: Long, val mode: HistoryMode) : CardEvent

@@ -1,9 +1,6 @@
 package client.api.cards
 
-import client.api.abstractions.CardBody
-import client.api.abstractions.PaymentBody
-import client.api.abstractions.TransferBody
-import client.api.abstractions.UpdateName
+import client.api.abstractions.*
 import client.api.requests.sendToUrl
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -14,7 +11,10 @@ import io.swagger.annotations.ApiResponses
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
+import server.abstractions.card.HistoryMode
 import server.commands.card.*
+import server.queries.card.CardMoneyQuery
+import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardQuery
 
@@ -43,6 +43,15 @@ class CardsControllerCQRS {
         }
     }
 
+    @ApiOperation(value = "Return card money")
+    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
+    @GetMapping("/cqrs/cards/{id}/money")
+    suspend fun getCardsMoneyById(@PathVariable id: Long): String {
+        log.info("GET Response: /cqrs/cards/${id}/money")
+        val query = CardMoneyQuery(id)
+        return sendToUrl("http://localhost:8080/cardsCommands/byIdMoney", query.toMap())
+    }
+
     @ApiOperation(value = "Return card history")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/cqrs/cards/{id}/history")
@@ -50,6 +59,29 @@ class CardsControllerCQRS {
         log.info("GET Response: /cards/${id}/history")
         val query = CardHistoryQuery(id)
         return sendToUrl("http://localhost:8080/cardsCommands/byIdHistory", query.toMap())
+    }
+
+    @ApiOperation(value = "Return card history (only changing balance)")
+    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
+    @GetMapping("/cqrs/cards/{id}/history/pays")
+    suspend fun getCardsHistoryPaysById(@PathVariable id: Long): Any {
+        log.info("GET Response: /cards/${id}/history/pays")
+        val query = CardHistoryQuery(id, HistoryMode.PAYS)
+        return sendToUrl("http://localhost:8080/cardsCommands/byIdHistory", query.toMap())
+    }
+
+    @ApiOperation(value = "Return all user cards")
+    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
+    @GetMapping("/cqrs/cards/all")
+    suspend fun getCardsAll(): List<CardBody> {
+        log.info("GET Response: /cqrs/cards/all")
+        val query = CardAllQuery()
+        val cardsJson = sendToUrl("http://localhost:8080/cardsCommands/all", query.toMap())
+        return try {
+            GSON.fromJson(cardsJson, object : TypeToken<List<CardBody>>() {}.type)
+        } catch (ex: Exception) {
+            listOf()
+        }
     }
 
     //
@@ -97,6 +129,15 @@ class CardsControllerCQRS {
         log.info("POST Response: /cqrs/cards/${id}/receipt")
         val command = CardReceiptCommand(transferBody.money, id)
         return sendToUrl("http://localhost:8080/cardsCommands/receipt", command.toMap())
+    }
+
+    @ApiOperation(value = "Transfer between own cards")
+    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
+    @PostMapping("/cqrs/cards/{id}/localTransfer")
+    suspend fun postCardsLocalTransferById(@PathVariable id: Long, @RequestBody transferToBody: TransferToBody): String {
+        log.info("POST Response: /cqrs/cards/${id}/localTransfer")
+        val command = CardLocalTransferCommand(transferToBody.money, id, transferToBody.idTo)
+        return sendToUrl("http://localhost:8080/cardsCommands/localTransfer", command.toMap())
     }
 
     @ApiOperation(value = "Delete card")

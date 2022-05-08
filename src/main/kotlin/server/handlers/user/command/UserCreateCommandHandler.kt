@@ -2,6 +2,8 @@ package server.handlers.user.command
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Isolation
+import org.springframework.transaction.annotation.Transactional
 import server.abstractions.user.AnyUserEventRes
 import server.commands.user.UserCreateCommand
 import server.db.postgresql.TempEventsRepository
@@ -18,14 +20,16 @@ class UserCreateCommandHandler @Autowired constructor(observerUser: ObserverUser
         attach(observerUser)
     }
 
+    @Transactional(rollbackFor = [Exception::class], isolation = Isolation.SERIALIZABLE)
     override fun handle(simpleCommand: SimpleCommand): Long {
-        val command = simpleCommand.store.command as UserCreateCommand
+        val event = (simpleCommand.store.command as UserCreateCommand).event
         return userEvents().run {
-            val userUpd = update(command.event)
+            val userUpd = update(event)
             userEventsRepository.save(this)
-            send(userUpd)
             tempEventsRepository.deleteById(simpleCommand.id!!)
-            id ?: throw Exception("UserCreateCommandHandler id error")
+            val idRet = id ?: throw Exception("UserCreateCommandHandler id error")
+            send(userUpd)
+            idRet
         }
     }
 }

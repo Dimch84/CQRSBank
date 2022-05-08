@@ -14,4 +14,6 @@ abstract class AnyCommandHandler<R : Res> {
     fun send(res: R) = anyObservers.forEach { it.update(res) }
 
     abstract fun handle(simpleCommand: SimpleCommand): Any
+
+    open fun rollBack(simpleCommand: SimpleCommand): Any = {}
 }

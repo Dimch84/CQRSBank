@@ -2,6 +2,8 @@ package server.handlers.card.command
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Isolation
+import org.springframework.transaction.annotation.Transactional
 import server.abstractions.card.AnyCardEventRes
 import server.abstractions.card.CardHistoryRes
 import server.commands.card.CardHistoryCommand
@@ -17,8 +19,9 @@ class CardHistoryCommandHandler @Autowired constructor(observerCard: ObserverCar
         attach(observerCard)
     }
 
+    @Transactional(rollbackFor = [Exception::class], isolation = Isolation.SERIALIZABLE)
     override fun handle(simpleCommand: SimpleCommand): CardHistoryRes {
-        val command = simpleCommand.store.command as CardHistoryCommand
-        return cardEvents(command.id, init=false).run { update(command.event) }
+        val event = (simpleCommand.store.command as CardHistoryCommand).event
+        return cardEvents(event.id, init=false).run { update(event) }
     }
 }

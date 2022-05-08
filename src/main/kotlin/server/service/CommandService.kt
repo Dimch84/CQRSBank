@@ -4,11 +4,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import server.abstractions.Res
 import server.commands.Command
 import server.db.postgresql.TempEventsRepository
 import server.db.postgresql.entities.SimpleCommand
 import server.events.command.StoreCommand
 import server.events.command.TypeCommand.*
+import server.handlers.AnyCommandHandler
 import server.handlers.account.command.AccountCreateCommandHandler
 import server.handlers.account.command.AccountDeleteCommandHandler
 import server.handlers.account.command.AccountUpdatePlanCommandHandler
@@ -19,6 +21,7 @@ import server.handlers.account.query.AccountByIdQueryHandler
 import server.handlers.card.command.*
 import server.handlers.card.query.CardAllQueryHandler
 import server.handlers.card.query.CardByIdHistoryQueryHandler
+import server.handlers.card.query.CardByIdMoneyQueryHandler
 import server.handlers.card.query.CardByIdQueryHandler
 import server.handlers.user.command.UserCreateCommandHandler
 import server.handlers.user.command.UserDeleteCommandHandler
@@ -33,6 +36,7 @@ import server.queries.account.AccountMoneyQuery
 import server.queries.account.AccountQuery
 import server.queries.card.CardAllQuery
 import server.queries.card.CardHistoryQuery
+import server.queries.card.CardMoneyQuery
 import server.queries.card.CardQuery
 import server.queries.user.UserAccountsQuery
 import server.queries.user.UserAllQuery
@@ -47,21 +51,28 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
                                             private val cardPayCommandHandler: CardPayCommandHandler,
                                             private val cardTransferCommandHandler: CardTransferCommandHandler,
                                             private val cardReceiptCommandHandler: CardReceiptCommandHandler,
+                                            private val cardLocalTransferCommandHandler: CardLocalTransferCommandHandler,
                                             private val cardDeleteCommandHandler: CardDeleteCommandHandler,
+
                                             private val cardByIdQueryHandler: CardByIdQueryHandler,
                                             private val cardByIdHistoryQueryHandler: CardByIdHistoryQueryHandler,
+                                            private val cardByIdMoneyQueryHandler: CardByIdMoneyQueryHandler,
                                             private val cardAllQueryHandler: CardAllQueryHandler,
+
 
                                             private val userCreateCommandHandler: UserCreateCommandHandler,
                                             private val userUpdateProfileCommandHandler: UserUpdateProfileCommandHandler,
                                             private val userDeleteCommandHandler: UserDeleteCommandHandler,
+
                                             private val userByLoginQueryHandler: UserByLoginQueryHandler,
                                             private val userByLoginAccountsQueryHandler: UserByLoginAccountsQueryHandler,
                                             private val userAllQueryHandler: UserAllQueryHandler,
 
+
                                             private val accountCreateCommandHandler: AccountCreateCommandHandler,
                                             private val accountUpdatePlanCommandHandler: AccountUpdatePlanCommandHandler,
                                             private val accountDeleteCommandHandler: AccountDeleteCommandHandler,
+
                                             private val accountAllQueryHandler: AccountAllQueryHandler,
                                             private val accountByIdCardsQueryHandler: AccountByIdCardsQueryHandler,
                                             private val accountByIdMoneyQueryHandler: AccountByIdMoneyQueryHandler,
@@ -70,21 +81,31 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
     private val log: Logger = LoggerFactory.getLogger(CommandService::class.java)
 
     private fun handle(simpleCommand: SimpleCommand, catch: Boolean=true) = try {
+        fun <R : Res> runHandle(commandHandler: AnyCommandHandler<R>, command: SimpleCommand): Any {
+            return try {
+                commandHandler.handle(command)
+            } catch (ex: Exception) {
+                commandHandler.rollBack(command)
+                throw ex
+            }
+        }
+
         when (simpleCommand.store.type) {
-            CARD_CREATE_COMMAND         -> cardCreateCommandHandler.handle(simpleCommand)
-            CARD_UPDATE_NAME_COMMAND    -> cardUpdateNameCommandHandler.handle(simpleCommand)
-            CARD_PAY_COMMAND            -> cardPayCommandHandler.handle(simpleCommand)
-            CARD_TRANSFER_COMMAND       -> cardTransferCommandHandler.handle(simpleCommand)
-            CARD_RECEIPT_COMMAND        -> cardReceiptCommandHandler.handle(simpleCommand)
-            CARD_DELETE_COMMAND         -> cardDeleteCommandHandler.handle(simpleCommand)
+            CARD_CREATE_COMMAND         -> runHandle(cardCreateCommandHandler, simpleCommand)
+            CARD_UPDATE_NAME_COMMAND    -> runHandle(cardUpdateNameCommandHandler, simpleCommand)
+            CARD_PAY_COMMAND            -> runHandle(cardPayCommandHandler, simpleCommand)
+            CARD_TRANSFER_COMMAND       -> runHandle(cardTransferCommandHandler, simpleCommand)
+            CARD_RECEIPT_COMMAND        -> runHandle(cardReceiptCommandHandler, simpleCommand)
+            CARD_LOCAL_TRANSFER_COMMAND -> runHandle(cardLocalTransferCommandHandler, simpleCommand)
+            CARD_DELETE_COMMAND         -> runHandle(cardDeleteCommandHandler, simpleCommand)
 
-            USER_CREATE_COMMAND         -> userCreateCommandHandler.handle(simpleCommand)
-            USER_UPDATE_PROFILE_COMMAND -> userUpdateProfileCommandHandler.handle(simpleCommand)
-            USER_DELETE_COMMAND         -> userDeleteCommandHandler.handle(simpleCommand)
+            USER_CREATE_COMMAND         -> runHandle(userCreateCommandHandler, simpleCommand)
+            USER_UPDATE_PROFILE_COMMAND -> runHandle(userUpdateProfileCommandHandler, simpleCommand)
+            USER_DELETE_COMMAND         -> runHandle(userDeleteCommandHandler, simpleCommand)
 
-            ACCOUNT_CREATE_COMMAND      -> accountCreateCommandHandler.handle(simpleCommand)
-            ACCOUNT_UPDATE_PLAN_COMMAND -> accountUpdatePlanCommandHandler.handle(simpleCommand)
-            ACCOUNT_DELETE_COMMAND      -> accountDeleteCommandHandler.handle(simpleCommand)
+            ACCOUNT_CREATE_COMMAND      -> runHandle(accountCreateCommandHandler, simpleCommand)
+            ACCOUNT_UPDATE_PLAN_COMMAND -> runHandle(accountUpdatePlanCommandHandler, simpleCommand)
+            ACCOUNT_DELETE_COMMAND      -> runHandle(accountDeleteCommandHandler, simpleCommand)
 
             else -> Exception("command ${simpleCommand.store.type} not permitted")
         }
@@ -105,6 +126,7 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
         when (query) {
             is CardQuery            -> cardByIdQueryHandler.handle(query)
             is CardHistoryQuery     -> cardByIdHistoryQueryHandler.handle(query)
+            is CardMoneyQuery       -> cardByIdMoneyQueryHandler.handle(query)
             is CardAllQuery         -> cardAllQueryHandler.handle(query)
 
             is UserQuery            -> userByLoginQueryHandler.handle(query)

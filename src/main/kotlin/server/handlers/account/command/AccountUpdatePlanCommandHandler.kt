@@ -2,6 +2,8 @@ package server.handlers.account.command
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Isolation
+import org.springframework.transaction.annotation.Transactional
 import server.abstractions.account.AnyAccountEventRes
 import server.commands.account.AccountUpdatePlanCommand
 import server.db.postgresql.AccountEventsRepository
@@ -18,13 +20,14 @@ class AccountUpdatePlanCommandHandler @Autowired constructor(observerAccount: Ob
         attach(observerAccount)
     }
 
+    @Transactional(rollbackFor = [Exception::class], isolation = Isolation.SERIALIZABLE)
     override fun handle(simpleCommand: SimpleCommand): String {
-        val command = simpleCommand.store.command as AccountUpdatePlanCommand
-        accountEvents(command.id).run {
-            val accountUpd = update(command.event)
+        val event = (simpleCommand.store.command as AccountUpdatePlanCommand).event
+        accountEvents(event.id).run {
+            val accountUpd = update(event)
             accountEventsRepository.save(this)
-            send(accountUpd)
             tempEventsRepository.deleteById(simpleCommand.id!!)
+            send(accountUpd)
         }
         return "ok"
     }

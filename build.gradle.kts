@@ -65,9 +65,9 @@ tasks.test {
     useJUnitPlatform()
 }
 
-allOpen {
-    annotation("org.springframework.data.mongodb.core.mapping.Document")
-}
+//allOpen {
+//    annotation("server.db.postgresql.entities.CardEvents")
+//}
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")

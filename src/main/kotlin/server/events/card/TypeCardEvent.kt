@@ -8,6 +8,7 @@ enum class TypeCardEvent {
     CARD_UPDATE_NAME_EVENT,
     CARD_PAY_EVENT,
     CARD_TRANSFER_EVENT,
+    CARD_LOCAL_TRANSFER_EVENT,
     CARD_DELETE_EVENT;
 
     val eventType: Type
@@ -16,6 +17,7 @@ enum class TypeCardEvent {
             CARD_UPDATE_NAME_EVENT -> object : TypeToken<CardUpdateNameEvent>() {}.type
             CARD_PAY_EVENT -> object : TypeToken<CardPayEvent>() {}.type
             CARD_TRANSFER_EVENT -> object : TypeToken<CardTransferEvent>() {}.type
+            CARD_LOCAL_TRANSFER_EVENT -> object : TypeToken<CardLocalTransferEvent>() {}.type
             CARD_DELETE_EVENT -> object : TypeToken<CardDeleteEvent>() {}.type
         }
 }

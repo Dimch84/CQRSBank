@@ -3,6 +3,7 @@ package client.api.accounts
 import client.api.abstractions.AccountBody
 import client.api.abstractions.CardBody
 import client.api.abstractions.PlanBody
+import client.api.common.CommonControllerCQRS
 import client.api.requests.sendToUrl
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*
 import server.commands.account.AccountCreateCommand
 import server.commands.account.AccountDeleteCommand
 import server.commands.account.AccountUpdatePlanCommand
+import server.queries.account.AccountAllQuery
 import server.queries.account.AccountCardsQuery
 import server.queries.account.AccountMoneyQuery
 import server.queries.account.AccountQuery
@@ -64,6 +66,20 @@ class AccountsControllerCQRS {
             cards.toString()
         } catch (ex: Exception) {
             cardsJson
+        }
+    }
+
+    @ApiOperation(value = "Return all user accounts")
+    @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
+    @GetMapping("/cqrs/accounts/all")
+    suspend fun getAccountsAll(): List<AccountBody> {
+        log.info("GET Response: /cqrs/accounts/all")
+        val query = AccountAllQuery()
+        val accountsJson = sendToUrl("http://localhost:8080/accountsCommands/all", query.toMap())
+        return try {
+            GSON.fromJson(accountsJson, object : TypeToken<List<AccountBody>>() {}.type)
+        } catch (ex: Exception) {
+            listOf()
         }
     }
 

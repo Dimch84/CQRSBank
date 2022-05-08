@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import server.abstractions.card.HistoryMode
 import server.commands.account.AccountCreateCommand
 import server.commands.card.*
 import server.commands.user.UserCreateCommand
@@ -19,6 +20,8 @@ import server.db.postgresql.CardEventsRepository
 import server.db.postgresql.UserEventsRepository
 import server.queries.account.AccountMoneyQuery
 import server.queries.card.CardHistoryQuery
+import server.queries.card.CardMoneyQuery
+import server.queries.card.CardQuery
 
 
 @ExtendWith(SpringExtension::class)
@@ -64,6 +67,12 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
                 .also { println("account with id=$accountId, money: $it") }
         }
 
+    fun getMoneyCard(cardId: Long) =
+        CardMoneyQuery(cardId).run {
+            service.send(this)!!
+                .also { println("card with id=$cardId, money: $it") }
+        }
+
     fun pay(cardId: Long, money: Long) =
         CardPayCommand(money, cardId).run {
             println("card with id=$cardId: pay $money")
@@ -82,9 +91,21 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
             service.send(this)
         }
 
+    fun localTransfer(cardId: Long, cardIdTo: Long, money: Long) =
+        CardLocalTransferCommand(money, cardId, cardIdTo).run {
+            println("card with id=$cardId: transfer $money to card with id=$cardIdTo")
+            service.send(this)
+        }
+
     fun history(cardId: Long) =
         CardHistoryQuery(cardId).run {
             println("card with id=$cardId history: ${
+                (service.send(this) as List<*>).joinToString(prefix = "\n", separator = ",\n")}")
+        }
+
+    fun historyPays(cardId: Long) =
+        CardHistoryQuery(cardId, HistoryMode.PAYS).run {
+            println("card with id=$cardId history pays: ${
                 (service.send(this) as List<*>).joinToString(prefix = "\n", separator = ",\n")}")
         }
 
@@ -95,11 +116,15 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
         val cardId1 = createCard("card1", accountId)
         val cardId2 = createCard("card2", accountId)
         var money = getMoney(accountId)
+        assert(getMoneyCard(cardId1) == money)
+        assert(getMoneyCard(cardId2) == money)
         assert(money == 100L)
         assert(pay(cardId1, 10) == "ok")
         assert(pay(cardId1, 10) == "ok")
         assert(pay(cardId2, 30) == "ok")
         money = getMoney(accountId)
+        assert(getMoneyCard(cardId1) == money)
+        assert(getMoneyCard(cardId2) == money)
         assert(money == 50L)
     }
 
@@ -109,12 +134,15 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
         val accountId = createAccount(100, userId)
         val cardId1 = createCard("card1", accountId)
         var money = getMoney(accountId)
+        assert(getMoneyCard(cardId1) == money)
         assert(money == 100L)
         assert(pay(cardId1, 100) == "ok")
         money = getMoney(accountId)
+        assert(getMoneyCard(cardId1) == money)
         assert(money == 0L)
         assert(pay(cardId1, 1) != "ok")
         money = getMoney(accountId)
+        assert(getMoneyCard(cardId1) == money)
         assert(money == 0L)
     }
 
@@ -138,6 +166,25 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
         assert(getMoney(accountId) == 0L)
 
         history(cardId1)
+        historyPays(cardId1)
         history(cardId2)
+        historyPays(cardId2)
+    }
+
+    @Test
+    fun localTransferTest() {
+        val userId = createUser("user")
+        val accountId1 = createAccount(100, userId)
+        val accountId2 = createAccount(100, userId)
+        val cardId1 = createCard("card1", accountId1)
+        val cardId2 = createCard("card2", accountId2)
+        assert(getMoneyCard(cardId1) == 100L)
+        assert(getMoneyCard(cardId2) == 100L)
+        assert(localTransfer(cardId1, cardId2, 60) == "ok")
+        assert(getMoneyCard(cardId1) == 40L)
+        assert(getMoneyCard(cardId2) == 160L)
+        assert(localTransfer(cardId1, cardId2, 50) != "ok")
+        assert(getMoneyCard(cardId1) == 40L)
+        assert(getMoneyCard(cardId2) == 160L)
     }
 }
