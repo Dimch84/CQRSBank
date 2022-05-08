@@ -21,6 +21,7 @@ import server.queries.card.CardQuery
 // TODO(not hardcode http://localhost:8080)
 @RestController
 @Api(description = "cards operations cqrs")
+@CrossOrigin(origins = ["http://localhost:8081", "http://172.20.10.13:8081"])
 class CardsControllerCQRS {
     companion object {
         private val GSON = Gson()

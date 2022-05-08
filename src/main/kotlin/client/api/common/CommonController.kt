@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@CrossOrigin(origins = ["http://localhost:8081"])
 @Api(description = "common debug operations")
 class CommonController {
     private val log: Logger = LoggerFactory.getLogger(CommonController::class.java)

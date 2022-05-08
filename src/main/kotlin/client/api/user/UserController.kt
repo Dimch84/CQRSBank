@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Api(description = "for profile user")
+@CrossOrigin(origins = ["http://localhost:8081", "http://172.20.10.13:8081"])
 class UserController {
     private val log: Logger = LoggerFactory.getLogger(UserController::class.java)
 

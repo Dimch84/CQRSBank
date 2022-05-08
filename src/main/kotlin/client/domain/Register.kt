@@ -11,6 +11,13 @@ class Register(private val login: String) {
 
     private fun getUser() = client.postgresql.User.find { Users.login eq login }.also { assert(it.count() == 1L) }.first()
 
+    fun auth(registerBody: RegisterBody) = transaction {
+        val user = getUser()
+        if (user.password != registerBody.password)
+            throw Exception("incorrect password")
+        user.id.value
+    }
+
     fun post(registerBody: RegisterBody) = transaction {
         if (client.postgresql.User.find { Users.login eq login }.count() != 0L)
             throw Exception("user with login=${Users.login} already exist")

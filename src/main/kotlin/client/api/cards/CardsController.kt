@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @Api(description = "cards operations")
+@CrossOrigin(origins = ["http://localhost:8081", "http://172.20.10.13:8081"])
 class CardsController {
     private val log: Logger = LoggerFactory.getLogger(CardsController::class.java)
 
