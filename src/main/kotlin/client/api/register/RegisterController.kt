@@ -22,7 +22,7 @@ class RegisterController {
     @ApiOperation(value = "auth user by login and password")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @PostMapping("/auth/{login}")
-    suspend fun authRegister(@PathVariable login: String, @RequestBody registerBody: RegisterBody): Int {
+    suspend fun authRegister(@PathVariable login: String, @RequestBody registerBody: RegisterBody): Long {
         log.info("GET Response: /auth/${login}")
         return Register(login).auth(registerBody)
     }

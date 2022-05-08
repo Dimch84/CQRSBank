@@ -50,7 +50,7 @@ class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
 
     fun update(event: CardCreateEvent, add: Boolean = true): CardEventRes {
         val curId = id
-        eventRes.apply { name=event.name; type=event.type; accountId=event.accountId; id=curId }
+        eventRes.apply { name=event.name; type=event.type; accountId=event.accountId; cardNumber = event.cardNumber; expDate = event.expDate; cvv = event.cvv; id=curId }
         if (add) events.add(StoreCardEvent(event, CARD_CREATE_EVENT))
         return eventRes
     }

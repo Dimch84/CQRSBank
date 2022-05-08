@@ -58,6 +58,9 @@ class Account(id: EntityID<Long>) : LongEntity(id) {
 object Cards: LongIdTable() {
     val name = varchar("name", 80)
     val type = varchar("type", 80)
+    val cardNumber = varchar("cardNumber", 19)
+    val expDate = varchar("expDate", 5)
+    val cvv = varchar("cvv", 3)
     val accountId = reference("accountId", Accounts)
 }
 
@@ -66,6 +69,9 @@ class Card(id: EntityID<Long>) : LongEntity(id) {
 
     var name by Cards.name
     var type by Cards.type
+    var cardNumber by Cards.cardNumber
+    var expDate by Cards.expDate
+    var cvv by Cards.cvv
     var accountId by Account referencedOn Cards.accountId
 }
 
@@ -114,11 +120,11 @@ fun InitDatabase() {
         val account3 = Account.new { userId = user2; planId = simplePlan; money = 0 }
         val account4 = Account.new { userId = user3; planId = simplePlan; money = 1 }
 
-        Card.new { name =  "1234"; type = "Credit card"; accountId = account1 }
-        Card.new { name =  "1235"; type = "Credit card"; accountId = account2 }
-        Card.new { name =  "1236"; type = "Credit card"; accountId = account2 }
-        Card.new { name =  "1237"; type = "Credit card"; accountId = account3 }
-        Card.new { name =  "1238"; type = "Credit card"; accountId = account4 }
+        Card.new { name =  "1234"; type = "Credit card"; cardNumber = "0000 0000 0000 0000"; expDate = "01/30"; cvv = "000"; accountId = account1 }
+        Card.new { name =  "1235"; type = "Credit card"; cardNumber = "0000 0000 0000 0001"; expDate = "01/30"; cvv = "001"; accountId = account2 }
+        Card.new { name =  "1236"; type = "Credit card"; cardNumber = "0000 0000 0000 0002"; expDate = "01/30"; cvv = "002"; accountId = account2 }
+        Card.new { name =  "1237"; type = "Credit card"; cardNumber = "0000 0000 0000 0003"; expDate = "01/30"; cvv = "003"; accountId = account3 }
+        Card.new { name =  "1238"; type = "Credit card"; cardNumber = "0000 0000 0000 0004"; expDate = "01/30"; cvv = "004"; accountId = account4 }
     }
 }
 

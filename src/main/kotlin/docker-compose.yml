@@ -14,10 +14,7 @@ services:
 
   mongodb:
     container_name: mongoCqrs
-    image: mongo
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME="cqrs"
-      - MONGO_INITDB_ROOT_PASSWORD="cqrs"
+    image: mongo:5.0
     volumes:
       - ~/apps/mongo:/data/db
     ports:
