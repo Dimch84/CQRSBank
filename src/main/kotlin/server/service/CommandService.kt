@@ -29,6 +29,9 @@ import server.handlers.user.command.UserUpdateProfileCommandHandler
 import server.handlers.user.query.UserAllQueryHandler
 import server.handlers.user.query.UserByLoginAccountsQueryHandler
 import server.handlers.user.query.UserByLoginQueryHandler
+import server.handlers.userInfo.comand.UserInfoAddCommandHandler
+import server.handlers.userInfo.comand.UserInfoDeleteCommandHandler
+import server.handlers.userInfo.query.UserInfoQueryHandler
 import server.queries.Query
 import server.queries.account.AccountAllQuery
 import server.queries.account.AccountCardsQuery
@@ -41,6 +44,7 @@ import server.queries.card.CardQuery
 import server.queries.user.UserAccountsQuery
 import server.queries.user.UserAllQuery
 import server.queries.user.UserQuery
+import server.queries.userInfo.UserInfoQuery
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
@@ -76,7 +80,12 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
                                             private val accountAllQueryHandler: AccountAllQueryHandler,
                                             private val accountByIdCardsQueryHandler: AccountByIdCardsQueryHandler,
                                             private val accountByIdMoneyQueryHandler: AccountByIdMoneyQueryHandler,
-                                            private val accountByIdQueryHandler: AccountByIdQueryHandler) {
+                                            private val accountByIdQueryHandler: AccountByIdQueryHandler,
+
+                                            private val userInfoAddCommandHandler: UserInfoAddCommandHandler,
+                                            private val userInfoDeleteCommandHandler: UserInfoDeleteCommandHandler,
+
+                                            private val userInfoQueryHandler: UserInfoQueryHandler) {
     private val executorService = Executors.newFixedThreadPool(10)
     private val log: Logger = LoggerFactory.getLogger(CommandService::class.java)
 
@@ -106,6 +115,9 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
             ACCOUNT_CREATE_COMMAND      -> runHandle(accountCreateCommandHandler, simpleCommand)
             ACCOUNT_UPDATE_PLAN_COMMAND -> runHandle(accountUpdatePlanCommandHandler, simpleCommand)
             ACCOUNT_DELETE_COMMAND      -> runHandle(accountDeleteCommandHandler, simpleCommand)
+
+            USER_INFO_ADD_COMMAND       -> runHandle(userInfoAddCommandHandler, simpleCommand)
+            USER_INFO_DELETE_COMMAND    -> runHandle(userInfoDeleteCommandHandler, simpleCommand)
 
             else -> Exception("command ${simpleCommand.store.type} not permitted")
         }
@@ -137,6 +149,8 @@ class CommandService @Autowired constructor(private val tempEventsRepository: Te
             is AccountCardsQuery    -> accountByIdCardsQueryHandler.handle(query)
             is AccountMoneyQuery    -> accountByIdMoneyQueryHandler.handle(query)
             is AccountAllQuery      -> accountAllQueryHandler.handle(query)
+
+            is UserInfoQuery        -> userInfoQueryHandler.handle(query)
 
             else                    -> throw Exception("wrong query")
         }

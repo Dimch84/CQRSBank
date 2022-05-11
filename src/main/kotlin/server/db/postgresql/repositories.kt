@@ -2,10 +2,7 @@ package server.db.postgresql
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import server.db.postgresql.entities.AccountEvents
-import server.db.postgresql.entities.CardEvents
-import server.db.postgresql.entities.SimpleCommand
-import server.db.postgresql.entities.UserEvents
+import server.db.postgresql.entities.*
 
 
 @Repository
@@ -21,3 +18,6 @@ interface UserEventsRepository : JpaRepository<UserEvents, Long> {
 
 @Repository
 interface AccountEventsRepository : JpaRepository<AccountEvents, Long>
+
+@Repository
+interface UserInfoEventsRepository : JpaRepository<UserInfoEvents, Long>

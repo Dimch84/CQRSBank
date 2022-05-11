@@ -9,6 +9,8 @@ import server.commands.card.*
 import server.commands.user.UserCreateCommand
 import server.commands.user.UserDeleteCommand
 import server.commands.user.UserUpdateProfileCommand
+import server.commands.userInfo.UserInfoAddCommand
+import server.commands.userInfo.UserInfoDeleteCommand
 import java.lang.reflect.Type
 
 
@@ -31,7 +33,10 @@ enum class TypeCommand {
     ACCOUNT_UPDATE_MONEY_COMMAND,
     ACCOUNT_DELETE_COMMAND,
 
-    SEND_ONLY_COMMAND;
+    SEND_ONLY_COMMAND,
+
+    USER_INFO_ADD_COMMAND,
+    USER_INFO_DELETE_COMMAND;
 
     val commandType: Type
         get() = when(this) {
@@ -54,5 +59,8 @@ enum class TypeCommand {
             ACCOUNT_DELETE_COMMAND      -> object : TypeToken<AccountDeleteCommand>() {}.type
 
             SEND_ONLY_COMMAND           -> throw Exception("not exist command type")
+
+            USER_INFO_ADD_COMMAND       -> object : TypeToken<UserInfoAddCommand>() {}.type
+            USER_INFO_DELETE_COMMAND    -> object : TypeToken<UserInfoDeleteCommand>() {}.type
         }
 }

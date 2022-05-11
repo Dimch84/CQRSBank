@@ -1,4 +1,9 @@
 version: "3.3"
+
+#networks:
+#  app-tier:
+#    driver: bridge
+
 services:
   postgres:
     container_name: PostgresCqrs
@@ -22,3 +27,10 @@ services:
       - ~/apps/mongo:/data/db
     ports:
       - "27017:27017"
+
+#  elasticsearch:
+#    image: 'bitnami/elasticsearch:latest'
+#    networks:
+#      - app-tier
+#    ports:
+#      - "9200:9200"
