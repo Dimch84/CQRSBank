@@ -1,6 +1,6 @@
 <template>
     <el-col :offset="9">
-        <el-card class="box-card">
+    <el-card class="box-card" v-if="!this.$store.getters.isAuthenticated">
             <template #header>
                 <div class="card-header">
                 <span>Sign In</span>
@@ -18,6 +18,9 @@
             <el-button variant="primary" v-on:click="login">Login</el-button>
 
         </el-card>
+    <el-card class="box-card" v-if="this.$store.getters.isAuthenticated">
+        <el-button v-on:click="logout"><a href="/#/login">Logout</a></el-button>
+    </el-card>
     </el-col>
 </template>
 
@@ -43,24 +46,11 @@
         },
         methods: {
             login() {
-                axios.get("/register/" + this.$data.username +"/", {})
+                axios.get("cqrs/register/" + this.$data.username +"/", {})
                 .then(response => {
                     this.$data.name = response.data.name
                     console.log(this.$data.name)
-
-                    axios.post("/auth/" + this.$data.username +"/", { "name": this.$data.name, "password": this.$data.password})
-                    .then(response => {
-                        this.$store.dispatch('login', {'token': response.data, 'username': this.$data.username});
-                        this.$data.name = response.data.name
-                        console.log(this.$data.name)
-                    }, error => {
-                        this.$data.alertMessage = (error.length < 150) ? error.message : 'Request error';
-                        console.log(error)
-                    })
-                    .catch(e => {
-                        console.log(e);
-                        this.showAlert();
-                    })
+                    this.$store.dispatch('login', { 'login': this.$data.username, 'username': this.$data.username});
 
                 }, error => {
                     this.$data.alertMessage = (error.length < 150) ? error.message : 'Request error';
@@ -78,6 +68,9 @@
             },
             showAlert() {
                 this.dismissCountDown = this.dismissSecs
+            },
+            logout() {
+                this.$store.dispatch('logout');
             }
         },
     }

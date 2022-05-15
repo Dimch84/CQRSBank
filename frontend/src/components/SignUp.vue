@@ -20,6 +20,10 @@
 
         <el-button variant="primary" v-on:click="login">Register</el-button>
         </el-card>
+        <el-card class="box-card" v-if="this.$store.getters.isAuthenticated">
+            <el-button v-on:click="logout"><a href="/#/login">Logout</a></el-button>
+        </el-card>
+
     </el-col>
 </template>
 
@@ -44,9 +48,10 @@
         },
         methods: {
             login() {
-                axios.post("/register/" + this.$data.username +"/", { 'name': this.$data.name, 'password': this.$data.password })
-                .then(response => {
-                    this.$store.dispatch('login', {'token': response.data, 'username': this.$data.username});
+                axios.post("/cqrs/register/" + this.$data.username +"/", { 'name': this.$data.name, 'password': this.$data.password })
+                .run(response => {
+                    console.log(response)
+                    this.$store.dispatch('login', {'login': this.$data.username, 'username': this.$data.username});
                 }, error => {
                     this.$data.alertMessage = (error.length < 150) ? error.message : 'Request error';
                     console.log(error)
@@ -62,6 +67,9 @@
             showAlert() {
                 this.dismissCountDown = this.dismissSecs
             },
+            logout() {
+                this.$store.dispatch('logout');
+            }
         },
     }
 

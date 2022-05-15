@@ -52,7 +52,7 @@
         },
         methods: {
             transfer() {
-                axios.post("/cards/" + this.$data.from +"/payment/", {"money": this.$data.money})
+                axios.post("/cqrs/cards/" + this.$data.from +"/payment/", {"money": this.$data.money})
                 .then(response => {
                     console.log(response)
                     this.$data.from = ''
@@ -60,7 +60,7 @@
                     this.$data.money = 0
 
 
-                    axios.post("/cards/" + this.$data.to +"/receipt/", {"money": this.$data.money})
+                    axios.post("/cqrs/cards/" + this.$data.to +"/receipt/", {"money": this.$data.money})
                     .then(error => { console.log(error) })
                     .catch(e => { console.log(e); })
                 }, error => {
@@ -72,11 +72,11 @@
 
             },
             show() {
-            axios.get("/cards/" + this.$data.card, {})
+            axios.get("/cqrs/cards/" + this.$data.card, {})
                 .then(response => {
                     console.log(response)
 
-                    axios.get("/accounts/" + response.data.account_id, {})
+                    axios.get("/cqrs/accounts/" + response.data.account_id, {})
                     .then(r => {
                         console.log(r)
                         this.$data.on_card = r.data.money

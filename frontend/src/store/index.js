@@ -2,13 +2,13 @@ import { createStore } from "vuex";
 
 export let store = createStore({
     state: {
-        token: localStorage.getItem('user-token') || '',
+        login: localStorage.getItem('user-login') || '',
         username: localStorage.getItem('user-name') || '',
         authorities: localStorage.getItem('authorities') || '',
     },
     getters: {
         isAuthenticated: state => {
-            if (state.token != null && state.token != '') {
+            if (state.login != null && state.login != '') {
                 return true;
             } else {
                 return false;
@@ -20,23 +20,23 @@ export let store = createStore({
         getAuthorities: state => {
             return state.authorities;
         },
-        getToken: state => {
-            return state.token;
+        getLogin: state => {
+            return state.login
         }
     },
     mutations: {
         auth_login: (state, user) => {
-            localStorage.setItem('user-token', user.token);
+            localStorage.setItem('user-login', user.login);
             localStorage.setItem('user-name', user.name);
-            state.token = user.token;
+            state.login = user.login
             state.username = user.username;
         },
         auth_logout: (state) => {
-            state.token = '';
+            state.login = '';
             state.username = '';
             state.authorities = [];
-            localStorage.removeItem('user-token');
             localStorage.removeItem('user-name');
+            localStorage.removeItem('user-login');
             localStorage.removeItem('user-authorities');
         }
     },

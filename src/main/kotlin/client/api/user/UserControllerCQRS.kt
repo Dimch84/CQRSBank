@@ -29,10 +29,10 @@ class UserControllerCQRS {
 
     @ApiOperation(value = "Return user profile")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
-    @GetMapping("/cqrs/user")
-    suspend fun getUser(): String {     // UserProfileBody
-        log.info("GET Response: /cqrs/user")
-        val query = UserQuery(userLogin)
+    @GetMapping("/cqrs/user/{login}")
+    suspend fun getUser(@PathVariable login: String): String {     // UserProfileBody
+        log.info("GET Response: /cqrs/user/${login}")
+        val query = UserQuery(login)
         val userJson = sendToUrl("http://localhost:8080/userCommands/byLogin", query.toMap())
         return try {
             val user: UserProfileBody = GSON.fromJson(userJson, object : TypeToken<UserProfileBody>() {}.type)
@@ -44,10 +44,10 @@ class UserControllerCQRS {
 
     @ApiOperation(value = "Return user accounts")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
-    @GetMapping("/cqrs/user/accounts")
-    suspend fun getUserAccounts(): List<AccountBody> {
-        log.info("GET Response: /cqrs/user/accounts")
-        val query = UserAccountsQuery(userLogin)
+    @GetMapping("/cqrs/user/{login}/accounts")
+    suspend fun getUserAccounts(@PathVariable login: String): List<AccountBody> {
+        log.info("GET Response: /cqrs/user/${login}/accounts")
+        val query = UserAccountsQuery(login)
         val accountsJson = sendToUrl("http://localhost:8080/userCommands/byLoginAccounts", query.toMap())
         return try {
             GSON.fromJson(accountsJson, object : TypeToken<List<AccountBody>>() {}.type)
@@ -58,10 +58,10 @@ class UserControllerCQRS {
 
     @ApiOperation(value = "Update user profile")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
-    @PostMapping("/cqrs/user")
-    suspend fun postUser(@RequestBody userProfileBody: UserProfileBody): String {   // ignore userProfileBody.login
-        log.info("POST Response: /cqrs/user")
-        val command = UserUpdateProfileCommand(userProfileBody.name, userLogin, userProfileBody.phone,
+    @PostMapping("/cqrs/user/{login}")
+    suspend fun postUser(@PathVariable login: String, @RequestBody userProfileBody: UserProfileBody): String {   // ignore userProfileBody.login
+        log.info("POST Response: /cqrs/user/${login}")
+        val command = UserUpdateProfileCommand(userProfileBody.name, login, userProfileBody.phone,
             userProfileBody.email)
         return sendToUrl("http://localhost:8080/userCommands/updateProfile", command.toMap())
     }

@@ -20,8 +20,9 @@ import { store } from './store/index.js';
 
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import router from './router'
 
-createApp(App).use(store).use(ElementPlus).mount('#app')
+createApp(App).use(store).use(router).use(ElementPlus).mount('#app')
 //.use(BootstrapVue3)
 
 //…
