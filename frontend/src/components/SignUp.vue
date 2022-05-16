@@ -49,7 +49,7 @@
         methods: {
             login() {
                 axios.post("/cqrs/register/" + this.$data.username +"/", { 'name': this.$data.name, 'password': this.$data.password })
-                .run(response => {
+                .then(response => {
                     console.log(response)
                     this.$store.dispatch('login', {'login': this.$data.username, 'username': this.$data.username});
                 }, error => {

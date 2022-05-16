@@ -31,10 +31,6 @@
 
 </template>
 
-<!--<el-select v-model="from" placeholder="Card">-->
-<!--<el-option label="Zone one" value="shanghai" />-->
-<!--<el-option label="Zone two" value="beijing" />-->
-<!--</el-select>-->
 
 <script>
     import axios from 'axios'
