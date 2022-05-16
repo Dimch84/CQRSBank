@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import server.abstractions.card.HistoryMode
 import server.commands.card.*
@@ -26,13 +27,14 @@ class CardsControllerCQRS {
         private val GSON = Gson()
     }
     private val log: Logger = LoggerFactory.getLogger(CardsControllerCQRS::class.java)
+    private val userLogin: String by lazy { SecurityContextHolder.getContext().authentication.name }
 
     @ApiOperation(value = "Return card")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/cqrs/cards/{id}")
     suspend fun getCardsById(@PathVariable id: Long): String {  // CardBody
         log.info("GET Response: /cqrs/cards/${id}")
-        val query = CardQuery(id)
+        val query = CardQuery(id, userLogin)
         val cardJson = sendToUrl("http://localhost:8080/cardsCommands/byId", query.toMap())
         return try {
             cardJson    // for test only
@@ -48,7 +50,7 @@ class CardsControllerCQRS {
     @GetMapping("/cqrs/cards/{id}/money")
     suspend fun getCardsMoneyById(@PathVariable id: Long): String {
         log.info("GET Response: /cqrs/cards/${id}/money")
-        val query = CardMoneyQuery(id)
+        val query = CardMoneyQuery(id, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/byIdMoney", query.toMap())
     }
 
@@ -57,7 +59,7 @@ class CardsControllerCQRS {
     @GetMapping("/cqrs/cards/{id}/history")
     suspend fun getCardsHistoryById(@PathVariable id: Long): Any {
         log.info("GET Response: /cards/${id}/history")
-        val query = CardHistoryQuery(id)
+        val query = CardHistoryQuery(id, login=userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/byIdHistory", query.toMap())
     }
 
@@ -66,7 +68,7 @@ class CardsControllerCQRS {
     @GetMapping("/cqrs/cards/{id}/history/pays")
     suspend fun getCardsHistoryPaysById(@PathVariable id: Long): Any {
         log.info("GET Response: /cards/${id}/history/pays")
-        val query = CardHistoryQuery(id, HistoryMode.PAYS)
+        val query = CardHistoryQuery(id, HistoryMode.PAYS, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/byIdHistory", query.toMap())
     }
 
@@ -75,7 +77,7 @@ class CardsControllerCQRS {
     @GetMapping("/cqrs/cards/all")
     suspend fun getCardsAll(): List<CardBody> {
         log.info("GET Response: /cqrs/cards/all")
-        val query = CardAllQuery()
+        val query = CardAllQuery(userLogin)
         val cardsJson = sendToUrl("http://localhost:8080/cardsCommands/all", query.toMap())
         return try {
             GSON.fromJson(cardsJson, object : TypeToken<List<CardBody>>() {}.type)
@@ -91,7 +93,7 @@ class CardsControllerCQRS {
     @PostMapping("/cqrs/cards")
     suspend fun postCards(@RequestBody cardBody: CardBody): String {
         log.info("POST Response: /cqrs/cards")
-        val command = CardCreateCommand(cardBody.name, cardBody.type, cardBody.accountId)
+        val command = CardCreateCommand(cardBody.name, cardBody.type, cardBody.accountId, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/create", command.toMap())
     }
 
@@ -100,7 +102,7 @@ class CardsControllerCQRS {
     @PostMapping("/cqrs/cards/{id}/updateName")
     suspend fun postCardsUpdateNameById(@PathVariable id: Long, @RequestBody cardName: UpdateName): String {
         log.info("POST Response: /cqrs/cards/${id}/updateName")
-        val command = CardUpdateNameCommand(cardName.name, id)
+        val command = CardUpdateNameCommand(cardName.name, id, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/updateName", command.toMap())
     }
 
@@ -109,7 +111,7 @@ class CardsControllerCQRS {
     @PostMapping("/cqrs/cards/{id}/payment")
     suspend fun postCardsPaymentById(@PathVariable id: Long, @RequestBody paymentBody: PaymentBody): String {
         log.info("POST Response: /cqrs/cards/${id}/payment")
-        val command = CardPayCommand(paymentBody.money, id)
+        val command = CardPayCommand(paymentBody.money, id, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/payment", command.toMap())
     }
 
@@ -118,7 +120,7 @@ class CardsControllerCQRS {
     @PostMapping("/cqrs/cards/{id}/transfer")
     suspend fun postCardsTransferById(@PathVariable id: Long, @RequestBody transferBody: TransferBody): String {
         log.info("POST Response: /cqrs/cards/${id}/transfer")
-        val command = CardTransferCommand(transferBody.money, id)
+        val command = CardTransferCommand(transferBody.money, id, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/transfer", command.toMap())
     }
 
@@ -127,7 +129,7 @@ class CardsControllerCQRS {
     @PostMapping("/cqrs/cards/{id}/receipt")
     suspend fun postCardsReceiptById(@PathVariable id: Long, @RequestBody transferBody: TransferBody): String {
         log.info("POST Response: /cqrs/cards/${id}/receipt")
-        val command = CardReceiptCommand(transferBody.money, id)
+        val command = CardReceiptCommand(transferBody.money, id, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/receipt", command.toMap())
     }
 
@@ -136,7 +138,7 @@ class CardsControllerCQRS {
     @PostMapping("/cqrs/cards/{id}/localTransfer")
     suspend fun postCardsLocalTransferById(@PathVariable id: Long, @RequestBody transferToBody: TransferToBody): String {
         log.info("POST Response: /cqrs/cards/${id}/localTransfer")
-        val command = CardLocalTransferCommand(transferToBody.money, id, transferToBody.idTo)
+        val command = CardLocalTransferCommand(transferToBody.money, id, transferToBody.idTo, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/localTransfer", command.toMap())
     }
 
@@ -145,7 +147,7 @@ class CardsControllerCQRS {
     @DeleteMapping("/cqrs/cards/{id}")
     suspend fun deleteCardsById(@PathVariable id: Long): String {
         log.info("DELETE Response: /cqrs/cards/${id}")
-        val command = CardDeleteCommand(id)
+        val command = CardDeleteCommand(id, userLogin)
         return sendToUrl("http://localhost:8080/cardsCommands/delete", command.toMap())
     }
 }

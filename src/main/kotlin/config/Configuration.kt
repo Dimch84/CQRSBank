@@ -16,14 +16,13 @@ import springfox.documentation.spring.web.plugins.Docket
 @EnableIntegration
 class Configuration {
     @Bean
-    fun api(): Docket {
-        return Docket(DocumentationType.SWAGGER_2)
+    fun swagger(): Docket =
+        Docket(DocumentationType.SWAGGER_2)
             .apiInfo(getApiInfo())
             .select()
-            .apis(RequestHandlerSelectors.basePackage("client/api"))
-            .paths(PathSelectors.any())
+            .apis(RequestHandlerSelectors.basePackage("client.api"))
+            .paths(PathSelectors.ant("/cqrs/**"))
             .build()
-    }
 
     private fun getApiInfo(): ApiInfo {
         val contact = Contact("CQRSBank", "https://github.com/Dimch84/CQRSBank", "example@gmail.com")

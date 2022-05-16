@@ -42,3 +42,5 @@ out/
 ###
 gradle-wrapper*
 /src/main/kotlin/start.sh
+/src/main/py/data/testdata.manual.2009.06.14.csv
+/src/main/py/data/training.1600000.processed.noemoticon.csv

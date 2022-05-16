@@ -38,7 +38,7 @@ class CardEvents: DomainEvents<StoreCardEvent, CardEventRes> {
                     CARD_UPDATE_NAME_EVENT      -> update(it.cardEvent as CardUpdateNameEvent, add = false)
                     CARD_PAY_EVENT              -> update(it.cardEvent as CardPayEvent, add = false)
                     CARD_TRANSFER_EVENT         -> update(it.cardEvent as CardTransferEvent, add = false)
-                    CARD_LOCAL_TRANSFER_EVENT   ->update(it.cardEvent as CardLocalTransferEvent, add = false)
+                    CARD_LOCAL_TRANSFER_EVENT   -> update(it.cardEvent as CardLocalTransferEvent, add = false)
                     CARD_DELETE_EVENT           -> throw DeleteException("card with id=${(it.cardEvent as CardDeleteEvent).id} was deleted")
                 }
             }

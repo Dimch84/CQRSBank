@@ -58,7 +58,7 @@ class UserEvents: DomainEvents<StoreUserEvent, UserEventRes> {
     fun update(event: UserUpdateProfileEvent, add: Boolean = true): UserEventRes {
         eventRes.apply {
             event.name?.let { name=it }
-            event.login?.let { login=it; loginEnd=it }
+//            event.login?.let { login=it; loginEnd=it }
             event.phone?.let { phone=it }
             event.email?.let { email=it }
         }

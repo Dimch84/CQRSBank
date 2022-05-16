@@ -19,17 +19,17 @@ import server.service.CommandService
 class UserCommandsController @Autowired constructor(private val service: CommandService) {
     @ApiOperation(value = "Get user by login")
     @PostMapping("/userCommands/byLogin")
-    suspend fun postUserByLoginQuery(@RequestBody userByLoginQuery: UserQuery) =
+    suspend fun getUserByLoginQuery(@RequestBody userByLoginQuery: UserQuery) =
         service.send(userByLoginQuery)
 
     @ApiOperation(value = "Get user accounts")
     @PostMapping("/userCommands/byLoginAccounts")
-    suspend fun postUserByLoginAccountsQuery(@RequestBody userAccountsQuery: UserAccountsQuery) =
+    suspend fun getUserByLoginAccountsQuery(@RequestBody userAccountsQuery: UserAccountsQuery) =
         service.send(userAccountsQuery)
 
     @ApiOperation(value = "Get all users")
     @PostMapping("/userCommands/all")
-    suspend fun postUserAllQuery(@RequestBody userAllQuery: UserAllQuery) =
+    suspend fun getUserAllQuery(@RequestBody userAllQuery: UserAllQuery) =
         service.send(userAllQuery)
 
     //

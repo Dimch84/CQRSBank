@@ -11,7 +11,6 @@ import server.abstractions.card.HistoryMode
 import server.commands.account.AccountCreateCommand
 import server.commands.card.*
 import server.commands.user.UserCreateCommand
-import server.service.CommandService
 import server.db.mongo.AccountRepository
 import server.db.mongo.CardRepository
 import server.db.mongo.UserRepository
@@ -21,7 +20,7 @@ import server.db.postgresql.UserEventsRepository
 import server.queries.account.AccountMoneyQuery
 import server.queries.card.CardHistoryQuery
 import server.queries.card.CardMoneyQuery
-import server.queries.card.CardQuery
+import server.service.CommandService
 
 
 @ExtendWith(SpringExtension::class)

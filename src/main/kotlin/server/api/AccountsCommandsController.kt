@@ -20,7 +20,7 @@ import server.service.CommandService
 class AccountsCommandsController @Autowired constructor(private val service: CommandService) {
     @ApiOperation(value = "Get account by id")
     @PostMapping("/accountsCommands/byId")
-    suspend fun postAccountsByIdQuery(@RequestBody accountByIdQuery: AccountQuery) =
+    suspend fun getAccountsByIdQuery(@RequestBody accountByIdQuery: AccountQuery) =
         service.send(accountByIdQuery)
 
     @ApiOperation(value = "Get account money")
@@ -35,7 +35,7 @@ class AccountsCommandsController @Autowired constructor(private val service: Com
 
     @ApiOperation(value = "Get all accounts")
     @PostMapping("/accountsCommands/all")
-    suspend fun postAccountsAllQuery(@RequestBody accountAllQuery: AccountAllQuery) =
+    suspend fun getAccountsAllQuery(@RequestBody accountAllQuery: AccountAllQuery) =
         service.send(accountAllQuery)
 
     //

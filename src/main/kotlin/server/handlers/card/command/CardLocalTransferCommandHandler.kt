@@ -1,6 +1,7 @@
 package server.handlers.card.command
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
@@ -8,6 +9,9 @@ import server.abstractions.card.AnyCardEventRes
 import server.commands.SendOnlyCommand
 import server.commands.account.AccountUpdateMoneyCommand
 import server.commands.card.CardLocalTransferCommand
+import server.db.mongo.AccountRepository
+import server.db.mongo.CardRepository
+import server.db.mongo.UserRepository
 import server.db.postgresql.CardEventsRepository
 import server.db.postgresql.TempEventsRepository
 import server.db.postgresql.entities.SimpleCommand
@@ -22,7 +26,10 @@ class CardLocalTransferCommandHandler @Autowired constructor(observerCard: Obser
                                                              private val cardEventsRepository: CardEventsRepository,
                                                              private val tempEventsRepository: TempEventsRepository,
                                                              private val accountUpdateMoneyCommandHandler: AccountUpdateMoneyCommandHandler,
-                                                             private val accountSendOnlyCommandHandler: AccountSendOnlyCommandHandler)
+                                                             private val accountSendOnlyCommandHandler: AccountSendOnlyCommandHandler,
+                                                             private val cardRepository: CardRepository,
+                                                             private val userRepository: UserRepository,
+                                                             private val accountRepository: AccountRepository)
     : AnyCardCommandHandler<AnyCardEventRes>(cardEventsRepository) {
     init {
         attach(observerCard)
@@ -44,6 +51,11 @@ class CardLocalTransferCommandHandler @Autowired constructor(observerCard: Obser
     @Transactional(rollbackFor = [Exception::class], isolation = Isolation.SERIALIZABLE)
     override fun handle(simpleCommand: SimpleCommand): String {
         val event = (simpleCommand.store.command as CardLocalTransferCommand).event
+        val userId_ = userRepository.findByLogin(event.login)?.id ?: throw Exception("wrong login")
+        val accountIdFrom = cardRepository.findByIdOrNull(event.idFrom)?.accountId ?: throw Exception("wrong card id from")
+        accountRepository.findByUserIdAndId(userId_, accountIdFrom) ?: throw Exception("wrong account id from")
+        val accountIdTo = cardRepository.findByIdOrNull(event.idTo)?.accountId ?: throw Exception("wrong card id to")
+        accountRepository.findByUserIdAndId(userId_, accountIdTo) ?: throw Exception("wrong account id to")
         val cardUpdFrom = cardEvents(event.idFrom).run {
             val cardUpd = update(event)
             val command = AccountUpdateMoneyCommand(event.money, cardUpd.accountId)

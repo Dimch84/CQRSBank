@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import server.commands.account.AccountCreateCommand
-import server.service.CommandService
 import server.commands.card.CardCreateCommand
-import server.commands.card.CardPayCommand
 import server.commands.card.CardUpdateNameCommand
 import server.commands.user.UserCreateCommand
 import server.db.mongo.AccountRepository
@@ -19,9 +17,9 @@ import server.db.mongo.UserRepository
 import server.db.postgresql.AccountEventsRepository
 import server.db.postgresql.CardEventsRepository
 import server.db.postgresql.UserEventsRepository
-import server.events.card.CardCreateEvent
 import server.db.postgresql.entities.CardEvents
-import server.queries.account.AccountMoneyQuery
+import server.events.card.CardCreateEvent
+import server.service.CommandService
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [Application::class])
@@ -48,7 +46,7 @@ class ServerTest @Autowired constructor(private val cardEventsRepository: CardEv
 
     @Test
     fun some1Test() {
-        cardEventsRepository.save(CardEvents().also { it.update(CardCreateEvent("name", "type", accountIdCur)) })
+        cardEventsRepository.save(CardEvents().also { it.update(CardCreateEvent("name", "type", accountIdCur, "admin")) })
         val result = cardEventsRepository.findAll().first()
         result.initEvents()
         assert(result.update().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==

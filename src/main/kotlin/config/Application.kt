@@ -17,7 +17,7 @@ import server.db.postgresql.*
 
 
 @SpringBootApplication
-@ComponentScan("client.api", "server")
+@ComponentScan("config", "client.api", "server")
 @EnableMongoRepositories(basePackageClasses=[CardRepository::class, UserRepository::class, AccountRepository::class])
 @EnableJpaRepositories(basePackageClasses=[TempEventsRepository::class, CardEventsRepository::class,
     UserEventsRepository::class, AccountEventsRepository::class, UserInfoEventsRepository::class])

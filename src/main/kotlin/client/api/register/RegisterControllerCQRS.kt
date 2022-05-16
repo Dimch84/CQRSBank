@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import server.commands.user.UserCreateCommand
 import server.commands.user.UserDeleteCommand
@@ -24,11 +25,14 @@ class RegisterControllerCQRS {
     }
 
     private val log: Logger = LoggerFactory.getLogger(RegisterControllerCQRS::class.java)
+    private val userLogin: String by lazy { SecurityContextHolder.getContext().authentication.name }
 
     @ApiOperation(value = "Show user by login")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/cqrs/register/{login}")
     suspend fun getRegisterLogin(@PathVariable login: String): String {     // UserProfileBody
+        if (userLogin != "admin" && userLogin != login)
+            return "No access"
         log.info("GET Response: /cqrs/register/${login}")
         val query = UserQuery(login)
         val userJson = sendToUrl("http://localhost:8080/userCommands/byLogin", query.toMap())
@@ -57,6 +61,8 @@ class RegisterControllerCQRS {
         ApiResponse(code = 409, message = "Login not exist")])
     @DeleteMapping("/cqrs/register/{login}")
     suspend fun deleteRegisterLogin(@PathVariable login: String): String {
+        if (userLogin != "admin" && userLogin != login)
+            return "No access"
         log.info("DELETE Response: /cqrs/register/${login}")
         val command = UserDeleteCommand(login)
         return sendToUrl("http://localhost:8080/userCommands/delete", command.toMap())

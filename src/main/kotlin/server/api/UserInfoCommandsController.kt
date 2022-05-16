@@ -17,13 +17,13 @@ import server.service.CommandService
 class UserInfoCommandsController @Autowired constructor(private val service: CommandService) {
     @ApiOperation(value = "Get user info all")
     @PostMapping("/userInfoCommands/info")
-    suspend fun postUserInfoQuery(@RequestBody userInfoQuery: UserInfoQuery) =
+    suspend fun getUserInfoQuery(@RequestBody userInfoQuery: UserInfoQuery) =
         service.send(userInfoQuery)
 
     // TODO(not handled yet, update)
     @ApiOperation(value = "Get user info request")
     @PostMapping("/userInfoCommands/info/query")
-    suspend fun postUserInfoRequestQuery(@RequestBody userInfoRequestQuery: UserInfoRequestQuery) =
+    suspend fun getUserInfoRequestQuery(@RequestBody userInfoRequestQuery: UserInfoRequestQuery) =
         service.send(userInfoRequestQuery)
 
     //

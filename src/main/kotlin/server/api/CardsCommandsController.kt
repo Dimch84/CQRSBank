@@ -18,17 +18,17 @@ import server.service.CommandService
 class CardsCommandsController @Autowired constructor(private val service: CommandService) {
     @ApiOperation(value = "Get card by id")
     @PostMapping("/cardsCommands/byId")
-    suspend fun postCardsByIdQuery(@RequestBody cardByIdQuery: CardQuery) =
+    suspend fun getCardsByIdQuery(@RequestBody cardByIdQuery: CardQuery) =
         service.send(cardByIdQuery)
 
     @ApiOperation(value = "Get card history")
     @PostMapping("/cardsCommands/byIdHistory")
-    suspend fun postCardsByIdHistoryQuery(@RequestBody cardHistoryQuery: CardHistoryQuery) =
+    suspend fun getCardsByIdHistoryQuery(@RequestBody cardHistoryQuery: CardHistoryQuery) =
         service.send(cardHistoryQuery)
 
     @ApiOperation(value = "Get all cards")
     @PostMapping("/cardsCommands/all")
-    suspend fun postCardsAllQuery(@RequestBody cardAllQuery: CardAllQuery) =
+    suspend fun getCardsAllQuery(@RequestBody cardAllQuery: CardAllQuery) =
         service.send(cardAllQuery)
 
     @ApiOperation(value = "Get card money")

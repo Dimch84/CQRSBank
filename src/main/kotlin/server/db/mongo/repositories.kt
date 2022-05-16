@@ -15,9 +15,15 @@ interface CardRepository : MongoRepository<CardEntity, Long> {
 @Repository
 interface UserRepository : MongoRepository<UserEntity, Long> {
     fun findByLogin(login: String): UserEntity?
+
+    fun findByLoginAndId(login: String, id: Long): UserEntity?
 }
 
 @Repository
 interface AccountRepository : MongoRepository<AccountEntity, Long> {
     fun findAllByUserId(userId: Long): List<AccountEntity>
+
+    fun findByUserIdAndId(userId: Long, id: Long): AccountEntity?
+
+    fun findByUserId(userId: Long): List<AccountEntity>
 }

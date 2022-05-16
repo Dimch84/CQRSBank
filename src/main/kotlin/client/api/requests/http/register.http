@@ -1,13 +1,13 @@
-GET http://localhost:8080/register/my_login
+GET http://localhost:8080/cqrs/register/my_login
 
 ###
-POST http://localhost:8080/register/my_login
+POST http://localhost:8080/cqrs/register/my_login
 Content-Type: application/json
 
 {
   "name": "name",
-  "password": "my_password"
+  "password": "pass"
 }
 
 ###
-DELETE http://localhost:8080/register/my_login
+DELETE http://localhost:8080/cqrs/register/my_login
