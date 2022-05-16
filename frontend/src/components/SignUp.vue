@@ -44,9 +44,10 @@
         },
         methods: {
             login() {
-                axios.post("/register/" + this.$data.username +"/", { 'name': this.$data.name, 'password': this.$data.password })
+                axios.post("/cqrs/register/" + this.$data.username +"/", { 'name': this.$data.name, 'password': this.$data.password })
                 .then(response => {
-                    this.$store.dispatch('login', {'token': response.data, 'username': this.$data.username});
+                    console.log(response)
+                    this.$store.dispatch('login', {'login': this.$data.username, 'username': this.$data.username});
                 }, error => {
                     this.$data.alertMessage = (error.length < 150) ? error.message : 'Request error';
                     console.log(error)
