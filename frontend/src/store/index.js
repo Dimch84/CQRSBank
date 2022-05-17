@@ -2,9 +2,11 @@ import { createStore } from "vuex";
 
 export let store = createStore({
     state: {
+        userId: localStorage.getItem('user-id') || '',
         login: localStorage.getItem('user-login') || '',
         username: localStorage.getItem('user-name') || '',
-        authorities: localStorage.getItem('authorities') || '',
+        accountName: localStorage.getItem('account-name') || '',
+        accountId: localStorage.getItem('account-id') || ''
     },
     getters: {
         isAuthenticated: state => {
@@ -17,27 +19,41 @@ export let store = createStore({
         getUsername: state => {
             return state.username;
         },
-        getAuthorities: state => {
-            return state.authorities;
-        },
         getLogin: state => {
             return state.login
-        }
+        },
+        getUserId: state => {
+            return state.userId
+        },
+        getAccountId: state => {
+            return state.accountId
+        },
+        getAccountName: state => {
+            return state.accountName
+        },
     },
     mutations: {
         auth_login: (state, user) => {
             localStorage.setItem('user-login', user.login);
             localStorage.setItem('user-name', user.name);
-            state.login = user.login
+            localStorage.setItem('user-id', user.id);
+            state.login = user.login;
             state.username = user.username;
+            state.userId = user.id;
         },
         auth_logout: (state) => {
             state.login = '';
             state.username = '';
-            state.authorities = [];
+            state.userId = '';
             localStorage.removeItem('user-name');
             localStorage.removeItem('user-login');
-            localStorage.removeItem('user-authorities');
+            localStorage.removeItem('user-id');
+        },
+        set_account: (state, account) => {
+            localStorage.setItem('account-id', account.id);
+            localStorage.setItem('account-name', account.name);
+            state.accountId = account.id;
+            state.accountName = account.name;
         }
     },
     actions: {
@@ -46,6 +62,9 @@ export let store = createStore({
         },
         logout: (context) => {
             context.commit('auth_logout');
-        }
+        },
+        selectAccount: (context, account) => {
+            context.commit('set_account', account)
+        },
     }
 });

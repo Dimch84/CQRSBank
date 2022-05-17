@@ -2,32 +2,35 @@
     <el-col :offset="9">
 
         <el-card class="box-card">
-            <template #header>
-                <div class="card-header">
-                    <el-dropdown :hide-on-click="false">
-                        <span class="el-dropdown-link">
-                            Select Account<el-icon class="el-icon--right"><arrow-down /></el-icon>
-                        </span>
-                        <template #dropdown>
-                            <el-dropdown-menu>
-                            </el-dropdown-menu>
-                            </template>
-                    </el-dropdown>
-                    <span> {{ account }} </span>
-                </div>
-            </template>
+            <template #header>User Page</template>
 
         </el-card>
     </el-col>
 </template>
+<!-- TODO: change <el-col :offset="9"> to something -->
+
 
 <!--<div v-for="item in cards" :key="item" class="text item">{{ 'Account with ' + item.message + '$'}}</div>-->
-<!--<el-dropdown-item v-for="item in accounts" :key="item" v-on:click="accountChange(item.name)">{{ item.name }}</el-dropdown-item>-->
+<!--<div class="card-header">-->
+<!--<el-dropdown :hide-on-click="false">-->
+<!--    <span class="el-dropdown-link">-->
+<!--        Select Account<el-icon class="el-icon&#45;&#45;right"><arrow-down /></el-icon>-->
+<!--    </span>-->
+<!--    <template #dropdown>-->
+<!--    <el-dropdown-menu>-->
+<!--        <el-dropdown-item v-for="item in accounts" :key="item" v-on:click="accountChange(item.name)">{{ item.name }}</el-dropdown-item>-->
+<!--    </el-dropdown-menu>-->
+<!--</template>-->
 
 
-<script setup>
-    import { ArrowDown } from '@element-plus/icons-vue'
-</script>
+<!--</el-dropdown>-->
+<!--<span> {{ account }} </span>-->
+<!--        </div>-->
+
+
+<!--<script setup>-->
+<!--    import { ArrowDown } from '@element-plus/icons-vue'-->
+<!--</script>-->
 
 
 <script>

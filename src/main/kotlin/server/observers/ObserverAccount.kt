@@ -12,7 +12,7 @@ import server.db.mongo.entities.AccountEntity
 class ObserverAccount @Autowired constructor(private val accountRepository: AccountRepository): AnyObserver<AnyAccountEventRes> {
     override fun update(res: AnyAccountEventRes): Unit = when(res) {
         is AccountEventRes -> {
-            accountRepository.save(AccountEntity(res.id!!, res.money!!, res.userId!!, res.planId!!))
+            accountRepository.save(AccountEntity(res.id!!, res.name!!, res.money!!, res.userId!!, res.planId!!))
             Unit
         }
         is AccountDeleteEventRes -> {

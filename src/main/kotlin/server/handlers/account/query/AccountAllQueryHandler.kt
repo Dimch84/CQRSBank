@@ -11,7 +11,7 @@ import server.queries.account.AccountAllQuery
 class AccountAllQueryHandler @Autowired constructor(private val accountRepository: AccountRepository)
         : AnyQueryHandler<AccountAllQuery>() {
     override fun handle(query: AccountAllQuery): String {
-        val accounts = accountRepository.findAll().map { AccountBody(it.money, it.userId, it.planId) }
+        val accounts = accountRepository.findAll().map { AccountBody(it.name, it.money, it.userId, it.planId) }
         return GSON.toJson(accounts)
     }
 }

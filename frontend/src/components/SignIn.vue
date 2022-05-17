@@ -29,7 +29,6 @@
 
 <script>
     import axios from 'axios'
-
     axios.defaults.baseURL = 'http://localhost:8080/';
 
     export default {
@@ -48,8 +47,7 @@
             login() {
                 axios.get("cqrs/register/" + this.$data.username +"/", {})
                 .then(response => {
-                    this.$data.name = response.data.name
-                    console.log(this.$data.name)
+                    console.log(response)
                     this.$store.dispatch('login', { 'login': this.$data.username, 'username': this.$data.username});
 
                 }, error => {
@@ -76,8 +74,8 @@
     }
 
 </script>
-
-<!--        this.$store.dispatch('login', {'token': response.data, 'username': this.$data.username});-->
+        <!--                    this.$data.name = response.data.name-->
+        <!--                    console.log(this.$data.name)-->
 
 <style>
 .card-header {
@@ -100,6 +98,3 @@
 }
 
 </style>
-
-        <!--        this.$router.push('/home')-->
-        <!--change token to id-->

@@ -23,6 +23,7 @@ import server.queries.account.AccountQuery
 
 @RestController
 @Api(description = "accounts operations")
+@CrossOrigin(origins = ["http://localhost:8081", "http://172.20.10.13:8081"])
 class AccountsControllerCQRS {
     companion object {
         private val GSON = Gson()
@@ -89,7 +90,7 @@ class AccountsControllerCQRS {
     @PostMapping("/cqrs/accounts")
     suspend fun postAccounts(@RequestBody accountBody: AccountBody): String {
         log.info("POST Response: /cqrs/accounts")
-        val command = AccountCreateCommand(accountBody.money, accountBody.userId, accountBody.planId)
+        val command = AccountCreateCommand(accountBody.name, accountBody.money, accountBody.userId, accountBody.planId)
         return sendToUrl("http://localhost:8080/accountsCommands/create", command.toMap())
     }
 

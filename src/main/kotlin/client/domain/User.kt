@@ -15,7 +15,7 @@ class User {
 
     val accounts: List<AccountBody>
         get() = transaction { getUser().run { Account.find { Accounts.userId eq id.value } }
-            .map { acc -> AccountBody(acc.money, acc.userId.id.value, acc.planId.id.value) }
+            .map { acc -> AccountBody(acc.name, acc.money, acc.userId.id.value, acc.planId.id.value) }
         }
 
     private fun getUser() = client.postgresql.User.find { Users.login eq userLogin }.also { assert(it.count() == 1L) }.first()

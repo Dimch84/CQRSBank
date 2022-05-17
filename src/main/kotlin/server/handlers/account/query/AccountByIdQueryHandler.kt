@@ -11,7 +11,7 @@ import server.queries.account.AccountQuery
 class AccountByIdQueryHandler @Autowired constructor(private val accountRepository: AccountRepository)
         : AnyQueryHandler<AccountQuery>() {
     override fun handle(query: AccountQuery): String {
-        val account = accountRepository.findById(query.id).get().run { AccountBody(money, userId, planId) }
+        val account = accountRepository.findById(query.id).get().run { AccountBody(name, money, userId, planId) }
         return GSON.toJson(account)
     }
 }

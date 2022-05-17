@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class Account(private var id: Long? = null) {
     val data: AccountBody
         get() = id?.let { id -> transaction { client.postgresql.Account.findById(id)?.run {
-            AccountBody(userId.id.value, planId.id.value, money) } }
+            AccountBody(name, userId.id.value, planId.id.value, money) } }
         } ?: throw Exception("wrong account id")
 
     val money : Long
