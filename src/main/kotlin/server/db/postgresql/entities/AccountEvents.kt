@@ -42,7 +42,7 @@ class AccountEvents: DomainEvents<StoreAccountEvent, AccountEventRes> {
 
     fun update(event: AccountCreateEvent, add: Boolean = true): AccountEventRes {
         val curId = id
-        eventRes.apply { money=event.money; userId=event.userId; planId=event.planId; id=curId }
+        eventRes.apply { name=event.name; money=event.money; userId=event.userId; planId=event.planId; id=curId }
         if (add) events.add(StoreAccountEvent(event, ACCOUNT_CREATE_EVENT))
         return eventRes
     }

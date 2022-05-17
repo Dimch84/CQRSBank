@@ -2,17 +2,17 @@
     <el-col :offset="9">
 
         <el-card class="box-card">
-            <template #header>
-                <div class="card-header">
-                    <span>Accounts</span>
-                </div>
-            </template>
-            <div v-for="item in items" :key="item" class="text item">{{ 'Account with ' + item.message + '$'}}</div>
+            <template #header>User Page</template>
 
         </el-card>
     </el-col>
 </template>
+
+        <!-- TODO: change <el-col :offset="9"> to something -->
+
 <script setup>
+    import axios from 'axios'
+    axios.defaults.baseURL = 'http://localhost:8080/';
     import { ref } from 'vue'
 
     const items = ref([{ message: '5' }, { message: '55' }])

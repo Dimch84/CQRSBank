@@ -27,6 +27,7 @@ import server.queries.account.AccountQuery
 
 @RestController
 @Api(description = "accounts operations")
+@CrossOrigin(origins = ["http://localhost:8081", "http://172.20.10.13:8081"])
 class AccountsControllerCQRS @Autowired constructor(private val userRepository: UserRepository) {
     companion object {
         private val GSON = Gson()
@@ -100,7 +101,7 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
             return "wrong usr id"
         if (accountBody.money < 0)
             return "money must be at least 0"
-        val command = AccountCreateCommand(accountBody.money, accountBody.userId, accountBody.planId)
+        val command = AccountCreateCommand(accountBody.name, accountBody.money, accountBody.userId, accountBody.planId)
         return sendToUrl("http://localhost:8080/accountsCommands/create", command.toMap())
     }
 

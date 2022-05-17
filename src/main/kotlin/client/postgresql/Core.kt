@@ -42,6 +42,7 @@ class User(id: EntityID<Long>) : LongEntity(id) {
 }
 
 object Accounts: LongIdTable() {
+    val name = varchar("name", 80)
     val userId = reference("userId", Users)
     val planId = reference("planId", Plans)
     val money = long("money")
@@ -50,6 +51,7 @@ object Accounts: LongIdTable() {
 class Account(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Account>(Accounts)
 
+    var name by Accounts.name
     var userId by User referencedOn Accounts.userId
     var planId by Plan referencedOn Accounts.planId
     var money by Accounts.money
@@ -104,10 +106,10 @@ fun InitDatabase() {
         val user2 = User.new { name = "N"; login = "N"; password = "12345678"; phone = "3132131" }
         val user3 = User.new { name = "S"; login = "S"; password = "12345678"; phone = "2224412" }
 
-        val account1 = Account.new { userId = user1; planId = simplePlan; money = 1000 }
-        val account2 = Account.new { userId = user1; planId = vipPlan; money = 100000 }
-        val account3 = Account.new { userId = user2; planId = simplePlan; money = 0 }
-        val account4 = Account.new { userId = user3; planId = simplePlan; money = 1 }
+        val account1 = Account.new { name = "account1"; userId = user1; planId = simplePlan; money = 1000 }
+        val account2 = Account.new { name = "account2"; userId = user1; planId = vipPlan; money = 100000 }
+        val account3 = Account.new { name = "account3"; userId = user2; planId = simplePlan; money = 0 }
+        val account4 = Account.new { name = "account4"; userId = user3; planId = simplePlan; money = 1 }
 
         Card.new { name =  "1234"; type = "Credit card"; cardNumber = "0000 0000 0000 0000"; expDate = "01/30"; cvv = "000"; accountId = account1 }
         Card.new { name =  "1235"; type = "Credit card"; cardNumber = "0000 0000 0000 0001"; expDate = "01/30"; cvv = "001"; accountId = account2 }
