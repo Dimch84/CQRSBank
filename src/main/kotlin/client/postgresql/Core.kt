@@ -81,17 +81,6 @@ object DbSettings {
     }
 }
 
-object TestDbSettings {
-    val db by lazy {
-        Database.connect(
-            url = "jdbc:postgresql://127.0.0.1:5431/cqrs",
-            driver = "org.postgresql.Driver",
-            user = "cqrs",
-            password = "cqrs"
-        )
-    }
-}
-
 fun InitDatabase() {
     TransactionManager.defaultDatabase = DbSettings.db
 

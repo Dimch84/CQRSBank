@@ -34,7 +34,7 @@ class Cleaner  @Autowired constructor(private val tempEventsRepository: TempEven
         cardEventsRepository.deleteAll()
         userRepository.deleteAll()
         accountRepository.deleteAll()
-        userInfoRepository.deleteAll()
+//        userInfoRepository.deleteAll()
     }
 
     @Test
