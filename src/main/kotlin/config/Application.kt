@@ -22,7 +22,6 @@ import server.db.postgresql.CardEventsRepository
 import server.db.postgresql.TempEventsRepository
 import server.db.postgresql.UserEventsRepository
 import springfox.documentation.swagger2.annotations.EnableSwagger2
->>>>>>> simple business logic for the front
 
 
 @SpringBootApplication

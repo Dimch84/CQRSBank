@@ -1,6 +1,6 @@
 <template>
     <el-col :offset="9">
-        <el-card class="box-card">
+    <el-card class="box-card" v-if="!this.$store.getters.isAuthenticated">
             <template #header>
                 <div class="card-header">
                 <span>Sign In</span>
@@ -18,6 +18,9 @@
             <el-button variant="primary" v-on:click="login">Login</el-button>
 
         </el-card>
+    <el-card class="box-card" v-if="this.$store.getters.isAuthenticated">
+        <el-button v-on:click="logout"><a href="/#/login">Logout</a></el-button>
+    </el-card>
     </el-col>
 </template>
 
@@ -42,7 +45,7 @@
         },
         methods: {
             login() {
-                axios.get("/register/" + this.$data.username +"/", {})
+                axios.get("cqrs/register/" + this.$data.username +"/", {})
                 .then(response => {
                     console.log(response)
                     this.$store.dispatch('login', { 'login': this.$data.username, 'username': this.$data.username});
@@ -63,6 +66,9 @@
             },
             showAlert() {
                 this.dismissCountDown = this.dismissSecs
+            },
+            logout() {
+                this.$store.dispatch('logout');
             }
         },
     }

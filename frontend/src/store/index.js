@@ -10,7 +10,7 @@ export let store = createStore({
     },
     getters: {
         isAuthenticated: state => {
-            if (state.token != null && state.token != '') {
+            if (state.login != null && state.login != '') {
                 return true;
             } else {
                 return false;
@@ -34,7 +34,7 @@ export let store = createStore({
     },
     mutations: {
         auth_login: (state, user) => {
-            localStorage.setItem('user-token', user.token);
+            localStorage.setItem('user-login', user.login);
             localStorage.setItem('user-name', user.name);
             localStorage.setItem('user-id', user.id);
             state.login = user.login;
@@ -42,7 +42,7 @@ export let store = createStore({
             state.userId = user.id;
         },
         auth_logout: (state) => {
-            state.token = '';
+            state.login = '';
             state.username = '';
             state.userId = '';
             localStorage.removeItem('user-name');

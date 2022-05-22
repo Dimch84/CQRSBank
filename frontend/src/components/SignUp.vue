@@ -20,6 +20,10 @@
 
         <el-button variant="primary" v-on:click="login">Register</el-button>
         </el-card>
+        <el-card class="box-card" v-if="this.$store.getters.isAuthenticated">
+            <el-button v-on:click="logout"><a href="/#/login">Logout</a></el-button>
+        </el-card>
+
     </el-col>
 </template>
 
@@ -63,6 +67,9 @@
             showAlert() {
                 this.dismissCountDown = this.dismissSecs
             },
+            logout() {
+                this.$store.dispatch('logout');
+            }
         },
     }
 

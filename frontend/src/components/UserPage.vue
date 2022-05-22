@@ -52,7 +52,61 @@ console.log('submit!')
     axios.defaults.baseURL = 'http://localhost:8080/';
     import { ref } from 'vue'
 
-    const items = ref([{ message: '5' }, { message: '55' }])
+
+    export default {
+        name: 'UserSpace',
+        data() {
+            return {
+                account: "",
+                accounts: ref([{ name: 'first' }, { name: 'second' }]),
+                cards: ref([{ name: 'first', message: '5' }, { name: 'second', message: '55' }]),
+                username: '',
+                name: '',
+                password: '',
+            }
+        },
+        methods: {
+            login() {
+                axios.get("cqrs/register/" + this.$data.username +"/", {})
+                .then(response => {
+                    this.$data.name = response.data.name
+                    console.log(this.$data.name)
+                    this.$store.dispatch('login', { 'login': this.$data.username, 'username': this.$data.username});
+                }, error => {
+                    this.$data.alertMessage = (error.length < 150) ? error.message : 'Request error';
+                    console.log(error)
+                })
+                .catch(e => {
+                    console.log(e);
+                    this.showAlert();
+                })
+            },
+            logout() {
+                this.$store.dispatch('logout');
+            },
+            accountChange(name) {
+                this.$data.account = name
+            },
+            loadAccounts() {
+                console.log(this.$store.getters.getLogin)
+                axios.get("cqrs/user/" + this.$store.getters.getLogin + "/", {})
+                .then(response => {
+                    console.log(response)
+                }, error => {
+                    this.$data.alertMessage = (error.length < 150) ? error.message : 'Request error';
+                    console.log(error)
+                })
+                .catch(e => {
+                    console.log(e);
+                    this.showAlert();
+                })
+
+            }
+        },
+        beforeMount(){
+            this.loadAccounts()
+        },
+    }
 </script>
 
 <style>
@@ -73,6 +127,16 @@ console.log('submit!')
 
 .box-card {
     width: 480px;
+}
+
+.example-showcase .el-dropdown + .el-dropdown {
+    margin-left: 15px;
+}
+.example-showcase .el-dropdown-link {
+    cursor: pointer;
+    color: var(--el-color-primary);
+    display: flex;
+    align-items: center;
 }
 
 </style>
