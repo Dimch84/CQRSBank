@@ -10,17 +10,34 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import com.zaxxer.hikari.SQLExceptionOverride.Override
+import org.springframework.web.reactive.config.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties
-class SecurityConfig : WebSecurityConfigurerAdapter() {
+class SecurityConfig : WebSecurityConfigurerAdapter(), WebMvcConfigurer {
     @Autowired
     private lateinit var userDetailsService: UserDetails
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+
+    @Bean
+    fun addCorsMappings(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf("http://localhost:8081", "http://localhost:8081/", "http://127.0.0.1:8081/", "*")
+//        configuration.allowedMethods = listOf("GET", "POST")
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        source.registerCorsConfiguration("/cqrs/register/**", configuration)
+        return source
+    }
 
 //    // permit all
 //    override fun configure(http: HttpSecurity) {
@@ -66,9 +83,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 //            .antMatchers("/accountsCommands/**").hasAnyAuthority("ADMIN", "USER")
 //            .antMatchers("/cardsCommands/all").hasAuthority("ADMIN")
 //            .antMatchers("/cardsCommands/**").hasAnyAuthority("ADMIN", "USER")
-            .antMatchers("/**").hasAuthority("ADMIN")
+//            .antMatchers("/**").hasAuthority("ADMIN")
 
             .and().httpBasic()
+            .and().cors()
             .and().sessionManagement().disable()
     }
 

@@ -11,7 +11,7 @@ import server.queries.user.UserAllQuery
 class UserAllQueryHandler @Autowired constructor(private val userRepository: UserRepository)
         : AnyQueryHandler<UserAllQuery>() {
     override fun handle(query: UserAllQuery): String {
-        val userProfiles = userRepository.findAll().map { UserProfileBody(it.name, it.login, it.phone, it.email) }
+        val userProfiles = userRepository.findAll().map { UserProfileBody(it.id, it.name, it.login, it.phone, it.email) }
         return GSON.toJson(userProfiles)
     }
 }

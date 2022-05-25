@@ -11,11 +11,11 @@ class User {
     private val userLogin = "admin"     //: String by lazy { SecurityContextHolder.getContext().authentication.name }
 
     val data: UserProfileBody
-        get() = transaction { getUser() }.run { UserProfileBody(name, login, phone, email) }
+        get() = transaction { getUser() }.run { UserProfileBody(id.value, name, login, phone, email) }
 
     val accounts: List<AccountBody>
         get() = transaction { getUser().run { Account.find { Accounts.userId eq id.value } }
-            .map { acc -> AccountBody(acc.name, acc.money, acc.userId.id.value, acc.planId.id.value) }
+            .map { acc -> AccountBody(acc.id.value, acc.name, acc.money, acc.userId.id.value, acc.planId.id.value) }
         }
 
     private fun getUser() = client.postgresql.User.find { Users.login eq userLogin }.also { assert(it.count() == 1L) }.first()

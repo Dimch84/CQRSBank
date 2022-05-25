@@ -43,13 +43,7 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
     suspend fun getAccountsById(@PathVariable id: Long): String {   // AccountBody
         log.info("GET Response: /cqrs/accounts/${id}")
         val query = AccountQuery(id, userLogin)
-        val accountJson = sendToUrl("http://localhost:8080/accountsCommands/byId", query.toMap())
-        return try {
-            val account: AccountBody = GSON.fromJson(accountJson, object : TypeToken<AccountBody>() {}.type)
-            account.toString()
-        } catch (ex: Exception) {
-            accountJson
-        }
+        return sendToUrl("http://localhost:8080/accountsCommands/byId", query.toMap())
     }
 
     @ApiOperation(value = "Return account money")
@@ -67,13 +61,7 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
     suspend fun getAccountsCardsById(@PathVariable id: Long): String {  // List<CardBody>
         log.info("GET Response: /cqrs/accounts/${id}/cards")
         val query = AccountCardsQuery(id, userLogin)
-        val cardsJson = sendToUrl("http://localhost:8080/accountsCommands/byIdCards", query.toMap())
-        return try {
-            val cards: List<CardBody> = GSON.fromJson(cardsJson, object : TypeToken<List<CardBody>>() {}.type)
-            cards.toString()
-        } catch (ex: Exception) {
-            cardsJson
-        }
+        return sendToUrl("http://localhost:8080/accountsCommands/byIdCards", query.toMap())
     }
 
     @ApiOperation(value = "Return all user accounts")

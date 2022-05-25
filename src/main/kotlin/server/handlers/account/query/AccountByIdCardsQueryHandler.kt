@@ -17,7 +17,7 @@ class AccountByIdCardsQueryHandler @Autowired constructor(private val accountRep
     override fun handle(query: AccountCardsQuery): String {
         val userId_ = query.login?.let { userRepository.findByLogin(it)?.id } ?: throw Exception("wrong login")
         accountRepository.findByUserIdAndId(userId_, query.id) ?: throw Exception("wrong account id")
-        val cards = cardRepository.findByAccountId(query.id).map { CardBody(it.id, it.name, it.type, it.accountId) }
+        val cards = cardRepository.findByAccountId(query.id).map { CardBody(it.id, it.name, it.type, it.accountId, it.cardNumber, it.expDate, it.cvv) }
         return GSON.toJson(cards)
     }
 }

@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class Register(private val login: String) {
     val data: UserProfileBody
-        get() = transaction { getUser() }.run { UserProfileBody(name, login, phone, email) }
+        get() = transaction { getUser() }.run { UserProfileBody(id.value, name, login, phone, email) }
 
     private fun getUser() = client.postgresql.User.find { Users.login eq login }.also { assert(it.count() == 1L) }.first()
 

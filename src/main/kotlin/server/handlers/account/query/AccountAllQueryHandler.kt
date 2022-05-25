@@ -13,7 +13,7 @@ class AccountAllQueryHandler @Autowired constructor(private val accountRepositor
         : AnyQueryHandler<AccountAllQuery>() {
     override fun handle(query: AccountAllQuery): String {
         val userId_ = query.login?.let { userRepository.findByLogin(it)?.id } ?: throw Exception("wrong login")
-        val accounts = accountRepository.findAllByUserId(userId_).map { AccountBody(it.name, it.money, it.userId, it.planId) }
+        val accounts = accountRepository.findAllByUserId(userId_).map { AccountBody(it.id, it.name, it.money, it.userId, it.planId) }
         return GSON.toJson(accounts)
     }
 }

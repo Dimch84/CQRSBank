@@ -109,7 +109,7 @@ class CardsControllerCQRS {
     @PostMapping("/cqrs/cards")
     suspend fun postCards(@RequestBody cardBody: CardBody): String {
         log.info("POST Response: /cqrs/cards")
-        val command = CardCreateCommand(cardBody.name, cardBody.type, cardBody.accountId, cardBody.cardNumber, cardBody.expDate, cardBody.cvv)
+        val command = CardCreateCommand(cardBody.name, cardBody.type, cardBody.accountId, userLogin, cardBody.cardNumber, cardBody.expDate, cardBody.cvv)
         return sendToUrl("http://localhost:8080/cardsCommands/create", command.toMap())
     }
 

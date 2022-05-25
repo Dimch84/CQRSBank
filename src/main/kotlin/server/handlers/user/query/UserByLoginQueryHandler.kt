@@ -11,7 +11,7 @@ import server.queries.user.UserQuery
 class UserByLoginQueryHandler @Autowired constructor(private val userRepository: UserRepository)
         : AnyQueryHandler<UserQuery>() {
     override fun handle(query: UserQuery): String {
-        val card = userRepository.findByLogin(query.login)?.run { UserProfileBody(name, login, phone, email) }
+        val card = userRepository.findByLogin(query.login)?.run { UserProfileBody(id, name, login, phone, email) }
             ?: throw Exception("wrong login")
         return GSON.toJson(card)
     }
