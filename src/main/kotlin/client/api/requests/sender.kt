@@ -3,7 +3,6 @@ package client.api.requests
 import client.api.requests.RequestType.GET
 import client.api.requests.RequestType.POST
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.apache.tomcat.jni.User.username
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
