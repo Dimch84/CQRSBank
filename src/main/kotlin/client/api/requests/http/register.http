@@ -11,3 +11,13 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:8080/cqrs/register/my_login
+
+###
+POST http://login:pass@localhost:8080/cqrs/accounts
+Content-Type: application/json
+
+{
+  "money": 0,
+  "planId": 0,
+  "userId": 13
+}

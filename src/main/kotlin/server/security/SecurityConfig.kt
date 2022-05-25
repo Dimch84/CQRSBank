@@ -59,6 +59,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers("/userCommands/**").permitAll()
             .antMatchers("/accountsCommands/**").permitAll()
             .antMatchers("/cardsCommands/**").permitAll()
+            .antMatchers("/userInfoCommands/**").permitAll()    // consider publicly available
 //            .antMatchers("/userCommands/create").permitAll()
 //            .antMatchers("/userCommands/all").hasAuthority("ADMIN")
 //            .antMatchers("/userCommands/**").hasAnyAuthority("ADMIN", "USER")

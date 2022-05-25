@@ -38,15 +38,16 @@ class ServerTest @Autowired constructor(private val cardEventsRepository: CardEv
         cardRepository.deleteAll()
         accountRepository.deleteAll()
         userRepository.deleteAll()
-        val userId = service.send(UserCreateCommand("name", "login", "password")) as Long
+        val userId = service.send(UserCreateCommand("name", login, "password")) as Long
         accountIdCur = service.send(AccountCreateCommand(0, userId, 1)) as Long
     }
 
     private var accountIdCur: Long = 0
+    private val login = "login"
 
     @Test
     fun some1Test() {
-        cardEventsRepository.save(CardEvents().also { it.update(CardCreateEvent("name", "type", accountIdCur, "admin")) })
+        cardEventsRepository.save(CardEvents().also { it.update(CardCreateEvent("name", "type", accountIdCur, login)) })
         val result = cardEventsRepository.findAll().first()
         result.initEvents()
         assert(result.update().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
@@ -55,7 +56,7 @@ class ServerTest @Autowired constructor(private val cardEventsRepository: CardEv
 
     @Test
     fun some2Test() {
-        val command = CardCreateCommand("name", "type", accountIdCur)
+        val command = CardCreateCommand("name", "type", accountIdCur, login)
         println("command1 reply ${service.send(command)}")
         assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
                 mapOf("name" to "name", "type" to "type", "accountId" to accountIdCur))
@@ -63,10 +64,10 @@ class ServerTest @Autowired constructor(private val cardEventsRepository: CardEv
 
     @Test
     fun some3Test() {
-        val command1 = CardCreateCommand("name", "type", accountIdCur)
+        val command1 = CardCreateCommand("name", "type", accountIdCur, login)
         val id = service.send(command1) as Long
         println("command1 reply: $id")
-        val command2 = CardUpdateNameCommand("name2", id)
+        val command2 = CardUpdateNameCommand("name2", id, login)
         println("command2 reply: ${service.send(command2)}")
         assert(cardRepository.findAll().first().run { mapOf("name" to name, "type" to type, "accountId" to accountId) } ==
                 mapOf("name" to "name2", "type" to "type", "accountId" to accountIdCur))

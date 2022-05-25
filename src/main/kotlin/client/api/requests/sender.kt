@@ -3,17 +3,22 @@ package client.api.requests
 import client.api.requests.RequestType.GET
 import client.api.requests.RequestType.POST
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.apache.tomcat.jni.User.username
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.xml.bind.DatatypeConverter
 
-fun sendToUrl(url: String, data: Map<String, Any?>, type: RequestType = POST): String {
+
+fun sendToUrl(url: String, data: Map<String, Any?>, type: RequestType = POST, login: String?=null, password: String?=null): String {
     val con: HttpURLConnection = when(type) {
         POST -> (URL(url).openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             setRequestProperty("Content-Type", "application/json; utf-8")
             setRequestProperty("Accept", "application/json")
+            if (login != null && password != null)
+                setRequestProperty("Authorization", "Basic " + DatatypeConverter.printBase64Binary("$login:$password".toByteArray()))
             doOutput = true
             outputStream.use { os ->
                 val input = ObjectMapper().writeValueAsString(data).toByteArray(charset("utf-8"))
@@ -22,6 +27,8 @@ fun sendToUrl(url: String, data: Map<String, Any?>, type: RequestType = POST): S
         }
         GET -> (URL(url).openConnection() as HttpURLConnection).apply {
             requestMethod = "GET"
+            if (login != null && password != null)
+                setRequestProperty("Authorization", "Basic " + DatatypeConverter.printBase64Binary("$login:$password".toByteArray()))
             doOutput = true
         }
     }
