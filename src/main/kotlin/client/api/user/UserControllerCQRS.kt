@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,27 +19,32 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.*
 import server.commands.user.UserUpdateProfileCommand
+import server.db.mongo.UserRepository
+import server.db.mongo.entities.UserEntity
 import server.queries.user.UserAccountsQuery
 import server.queries.user.UserQuery
 
 @RestController
 @Api(description = "for profile user")
 @CrossOrigin(origins = ["http://localhost:8081/"])
-class UserControllerCQRS {
+class UserControllerCQRS @Autowired constructor(private val userRepository: UserRepository) {
     companion object {
         private val GSON = Gson()
     }
 
     private val log: Logger = LoggerFactory.getLogger(UserControllerCQRS::class.java)
     private val userLogin: String by lazy { SecurityContextHolder.getContext().authentication.name }
+    private val userEntity: UserEntity
+        get() = userRepository.findByLogin(userLogin) ?: throw Exception("wrong login")
 
     @ApiOperation(value = "Return user profile")
     @ApiResponses(value = [ApiResponse(code = 200, message = "Ok")])
     @GetMapping("/cqrs/user")
     suspend fun getUser(): String {     // UserProfileBody
         log.info("GET Response: /cqrs/user")
-        val query = UserQuery(userLogin)
-        val userJson = sendToUrl("http://localhost:8080/userCommands/byLogin", query.toMap())
+        val (login, password) = userEntity.run { login to password }
+        val query = UserQuery(login)
+        val userJson = sendToUrl("http://localhost:8080/userCommands/byLogin", query.toMap(), login=login, password=password)
         return try {
             GSON.fromJson(userJson, object : TypeToken<UserProfileBody>() {}.type)
         } catch (ex: Exception) {
@@ -51,8 +57,9 @@ class UserControllerCQRS {
     @GetMapping("/cqrs/user/accounts")
     suspend fun getUserAccounts(): List<AccountBody> {
         log.info("GET Response: /cqrs/user/accounts")
-        val query = UserAccountsQuery(userLogin)
-        val accountsJson = sendToUrl("http://localhost:8080/userCommands/byLoginAccounts", query.toMap())
+        val (login, password) = userEntity.run { login to password }
+        val query = UserAccountsQuery(login)
+        val accountsJson = sendToUrl("http://localhost:8080/userCommands/byLoginAccounts", query.toMap(), login=login, password=password)
         return try {
             GSON.fromJson(accountsJson, object : TypeToken<List<AccountBody>>() {}.type)
         } catch (ex: Exception) {
@@ -65,8 +72,9 @@ class UserControllerCQRS {
     @PostMapping("/cqrs/user")
     suspend fun postUser(@RequestBody userProfileBody: UserProfileBody): String {   // ignore userProfileBody.login
         log.info("POST Response: /cqrs/user")
-        val command = UserUpdateProfileCommand(userProfileBody.name, userLogin, userProfileBody.phone,
+        val (login, password) = userEntity.run { login to password }
+        val command = UserUpdateProfileCommand(userProfileBody.name, login, userProfileBody.phone,
             userProfileBody.email)
-        return sendToUrl("http://localhost:8080/userCommands/updateProfile", command.toMap())
+        return sendToUrl("http://localhost:8080/userCommands/updateProfile", command.toMap(), login=login, password=password)
     }
 }

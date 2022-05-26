@@ -42,8 +42,9 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
     @GetMapping("/cqrs/accounts/{id}")
     suspend fun getAccountsById(@PathVariable id: Long): String {   // AccountBody
         log.info("GET Response: /cqrs/accounts/${id}")
-        val query = AccountQuery(id, userLogin)
-        return sendToUrl("http://localhost:8080/accountsCommands/byId", query.toMap())
+        val (login, password) = userEntity.run { login to password }
+        val query = AccountQuery(id, login)
+        return sendToUrl("http://localhost:8080/accountsCommands/byId", query.toMap(), login=login, password=password)
     }
 
     @ApiOperation(value = "Return account money")
@@ -51,8 +52,9 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
     @GetMapping("/cqrs/accounts/{id}/money")
     suspend fun getAccountsMoneyById(@PathVariable id: Long): String {
         log.info("GET Response: /cqrs/accounts/${id}/money")
-        val query = AccountMoneyQuery(id, userLogin)
-        return sendToUrl("http://localhost:8080/accountsCommands/byIdMoney", query.toMap())
+        val (login, password) = userEntity.run { login to password }
+        val query = AccountMoneyQuery(id, login)
+        return sendToUrl("http://localhost:8080/accountsCommands/byIdMoney", query.toMap(), login=login, password=password)
     }
 
     @ApiOperation(value = "Return account cards")
@@ -60,8 +62,9 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
     @GetMapping("/cqrs/accounts/{id}/cards")
     suspend fun getAccountsCardsById(@PathVariable id: Long): String {  // List<CardBody>
         log.info("GET Response: /cqrs/accounts/${id}/cards")
-        val query = AccountCardsQuery(id, userLogin)
-        return sendToUrl("http://localhost:8080/accountsCommands/byIdCards", query.toMap())
+        val (login, password) = userEntity.run { login to password }
+        val query = AccountCardsQuery(id, login)
+        return sendToUrl("http://localhost:8080/accountsCommands/byIdCards", query.toMap(), login=login, password=password)
     }
 
     @ApiOperation(value = "Return all user accounts")
@@ -69,8 +72,9 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
     @GetMapping("/cqrs/accounts/all")
     suspend fun getAccountsAll(): List<AccountBody> {
         log.info("GET Response: /cqrs/accounts/all")
-        val query = AccountAllQuery(userLogin)
-        val accountsJson = sendToUrl("http://localhost:8080/accountsCommands/all", query.toMap())
+        val (login, password) = userEntity.run { login to password }
+        val query = AccountAllQuery(login)
+        val accountsJson = sendToUrl("http://localhost:8080/accountsCommands/all", query.toMap(), login=login, password=password)
         return try {
             GSON.fromJson(accountsJson, object : TypeToken<List<AccountBody>>() {}.type)
         } catch (ex: Exception) {
@@ -90,7 +94,8 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
         if (accountBody.money < 0)
             return "money must be at least 0"
         val command = AccountCreateCommand(accountBody.name, accountBody.money, accountBody.userId, accountBody.planId)
-        return sendToUrl("http://localhost:8080/accountsCommands/create", command.toMap())
+        val (login, password) = userEntity.run { login to password }
+        return sendToUrl("http://localhost:8080/accountsCommands/create", command.toMap(), login=login, password=password)
     }
 
     @ApiOperation(value = "Update account plan")
@@ -98,8 +103,9 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
     @PostMapping("/cqrs/accounts/{id}")
     suspend fun postAccountsById(@PathVariable id: Long, @RequestBody planBody: PlanBody): String {
         log.info("POST Response: /cqrs/accounts/${id}")
-        val command = AccountUpdatePlanCommand(planBody.planId, id, userLogin)
-        return sendToUrl("http://localhost:8080/accountsCommands/updatePlan", command.toMap())
+        val (login, password) = userEntity.run { login to password }
+        val command = AccountUpdatePlanCommand(planBody.planId, id, login)
+        return sendToUrl("http://localhost:8080/accountsCommands/updatePlan", command.toMap(), login=login, password=password)
     }
 
     @ApiOperation(value = "Delete account")
@@ -107,7 +113,8 @@ class AccountsControllerCQRS @Autowired constructor(private val userRepository: 
     @DeleteMapping("/cqrs/accounts/{id}")
     suspend fun deleteAccountsById(@PathVariable id: Long): String {
         log.info("DELETE Response: /cqrs/accounts/${id}")
-        val command = AccountDeleteCommand(id, userLogin)
-        return sendToUrl("http://localhost:8080/accountsCommands/delete", command.toMap())
+        val (login, password) = userEntity.run { login to password }
+        val command = AccountDeleteCommand(id, login)
+        return sendToUrl("http://localhost:8080/accountsCommands/delete", command.toMap(), login=login, password=password)
     }
 }

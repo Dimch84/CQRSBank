@@ -54,56 +54,56 @@ class PayTest @Autowired constructor(private val cardEventsRepository: CardEvent
             service.send(this) as Long
         }
 
-    fun createCard(name: String, accountId: Long, type: String="type") =
-        CardCreateCommand(name, type, accountId).run {
+    fun createCard(name: String, accountId: Long, type: String="type", login: String="login") =
+        CardCreateCommand(name, type, accountId, login).run {
             println("create card: ${toMap()}")
             service.send(this) as Long
         }
 
-    fun getMoney(accountId: Long) =
-        AccountMoneyQuery(accountId).run {
+    fun getMoney(accountId: Long, login: String="login") =
+        AccountMoneyQuery(accountId, login).run {
             service.send(this)!!
                 .also { println("account with id=$accountId, money: $it") }
         }
 
-    fun getMoneyCard(cardId: Long) =
-        CardMoneyQuery(cardId).run {
+    fun getMoneyCard(cardId: Long, login: String="login") =
+        CardMoneyQuery(cardId, login).run {
             service.send(this)!!
                 .also { println("card with id=$cardId, money: $it") }
         }
 
-    fun pay(cardId: Long, money: Long) =
-        CardPayCommand(money, cardId).run {
+    fun pay(cardId: Long, money: Long, login: String="login") =
+        CardPayCommand(money, cardId, login).run {
             println("card with id=$cardId: pay $money")
             service.send(this)
         }
 
-    fun receipt(cardId: Long, money: Long) =
-        CardReceiptCommand(money, cardId).run {
+    fun receipt(cardId: Long, money: Long, login: String="login") =
+        CardReceiptCommand(money, cardId, login).run {
             println("card with id=$cardId: receipt $money")
             service.send(this)
         }
 
-    fun transfer(cardId: Long, money: Long) =
-        CardTransferCommand(money, cardId).run {
+    fun transfer(cardId: Long, money: Long, login: String="login") =
+        CardTransferCommand(money, cardId, login).run {
             println("card with id=$cardId: transfer $money")
             service.send(this)
         }
 
-    fun localTransfer(cardId: Long, cardIdTo: Long, money: Long) =
-        CardLocalTransferCommand(money, cardId, cardIdTo).run {
+    fun localTransfer(cardId: Long, cardIdTo: Long, money: Long, login: String="login") =
+        CardLocalTransferCommand(money, cardId, cardIdTo, login).run {
             println("card with id=$cardId: transfer $money to card with id=$cardIdTo")
             service.send(this)
         }
 
-    fun history(cardId: Long) =
-        CardHistoryQuery(cardId).run {
+    fun history(cardId: Long, login: String="login") =
+        CardHistoryQuery(cardId, login=login).run {
             println("card with id=$cardId history: ${
                 (service.send(this) as List<*>).joinToString(prefix = "\n", separator = ",\n")}")
         }
 
-    fun historyPays(cardId: Long) =
-        CardHistoryQuery(cardId, HistoryMode.PAYS).run {
+    fun historyPays(cardId: Long, login: String="login") =
+        CardHistoryQuery(cardId, HistoryMode.PAYS, login).run {
             println("card with id=$cardId history pays: ${
                 (service.send(this) as List<*>).joinToString(prefix = "\n", separator = ",\n")}")
         }
