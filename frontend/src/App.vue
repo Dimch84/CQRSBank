@@ -49,9 +49,6 @@
 
   import axios from 'axios'
   import { ref } from 'vue'
-  axios.defaults.baseURL = 'http://localhost:8080/';
-
-
 
   const routes = {
     '/' : HomePage,
@@ -89,18 +86,23 @@
       changeAccount(accountName, accountId) {
         this.$store.dispatch('selectAccount', { 'name': accountName, 'id': accountId });
         console.log("Change Account:", accountName, accountId)
-        // TODO: Add page reload this.$router.go() maybe
+        location.reload();
       },
       addAccount() {
         console.log("Add Account", this.$data.curAccountName)
 
-        axios.post("/cqrs/accounts/", { 'name': this.$data.curAccountName, 'money': 0, 'planId': 0, 'userId': this.$store.getters.getUserId })
+        const instance = axios.create({
+          baseURL: 'http://localhost:8080/',
+          auth: { username: this.$store.getters.getLogin, password: this.$store.getters.getPassword },
+        });
+
+        instance.post(
+            "/cqrs/accounts/", { 'name': this.$data.curAccountName, 'money': 0, 'planId': 0, 'userId': this.$store.getters.getUserId })
         .then(response => {
           console.log(response)
           this.changeAccount(this.$data.curAccountName, response.data)
 
           this.$data.curAccountName = ''
-          this.loadAccounts()          // TODO: Add page reload this.$router.go() maybe, not loadAccounts
         }, error => {
           this.$data.alertMessage = (error.length < 150) ? error.message : 'Request error';
           console.log(error)
@@ -113,7 +115,13 @@
       },
       loadAccounts() {
         console.log("Load Accounts")
-        axios.get("/cqrs/user/" + this.$store.getters.getLogin + "/accounts/", {})
+
+        const instance = axios.create({
+          baseURL: 'http://localhost:8080/',
+          auth: { username: this.$store.getters.getLogin, password: this.$store.getters.getPassword },
+        });
+
+        instance.get("/cqrs/user/accounts/", {})
         .then(response => {
           console.log(response.data)
           this.$data.accounts = response.data
@@ -135,8 +143,6 @@
     }
   }
 </script>
-
-<!--TODO: support accountId-->
 
 
 <style>

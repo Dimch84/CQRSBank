@@ -8,10 +8,10 @@
             </template>
 
             <div>
-                <el-input type="text" placeholder="Username" v-model="username" />
+                <el-input type="text" placeholder="Login" v-model="user_login" />
                 <div style="margin: 10px 0" />
 
-                <el-input type="password" placeholder="Password" v-model="password" />
+                <el-input type="password" placeholder="Password" v-model="user_password" />
                 <div style="margin: 10px 0" />
             </div>
 
@@ -35,31 +35,23 @@
         name: 'SignIn',
         data() {
             return {
-                username: '',
-                name: '',
-                password: '',
-                dismissSecs: 5,
-                dismissCountDown: 0,
-                alertMessage: 'Request error',
+                user_login: '',
+                user_password: '',
             }
         },
         methods: {
             login() {
-                axios.get("cqrs/register/" + this.$data.username +"/", {})
+                const instance = axios.create({
+                    baseURL: 'http://localhost:8080/',
+                    auth: { username: this.$data.user_login, password: this.$data.user_password },
+                });
+
+                instance.get("cqrs/user/",  {})
                 .then(response => {
                     console.log(response)
-                    this.$store.dispatch('login', { 'login': this.$data.username, 'username': this.$data.username});
-
-                }, error => {
-                    this.$data.alertMessage = (error.length < 150) ? error.message : 'Request error';
-                    console.log(error)
-                })
-                .catch(e => {
-                    console.log(e);
-                    this.showAlert();
-                })
-
-
+                    this.$store.dispatch('login', { 'login': this.$data.user_login, 'username': response.data.name, 'password': this.$data.user_password, 'id':response.data.id });
+                }, error => { console.log(error) })
+                .catch(e => { console.log(e); })
             },
             countDownChanged(dismissCountDown) {
                 this.dismissCountDown = dismissCountDown

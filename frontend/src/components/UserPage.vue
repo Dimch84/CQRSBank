@@ -1,73 +1,51 @@
 <template>
     <h1>User Page</h1>
-    <el-col :offset="1">
-    <div style="margin: 30px" />
-    <el-form :model="form" label-width="50px" width="40%">
+    <el-col :offset="9">
+    <el-card class="box-card" v-if="this.$store.getters.isAuthenticated">
+    <el-form :inline=true label-width="70px">
         <el-form-item label="Name">
-            <el-input v-model="form.name" width="40%"/>
+            <el-input v-model="user.name"/>
         </el-form-item>
         <el-form-item label="Login">
-            <el-input v-model="form.name" />
+            <el-input v-model="user.login" disabled/>
         </el-form-item>
         <el-form-item label="Phone">
-            <el-input v-model="form.name" />
+            <el-input v-model="user.phone" />
         </el-form-item>
         <el-form-item label="Email">
-            <el-input v-model="form.name" />
+            <el-input v-model="user.email" />
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="onSubmit">Change</el-button>
+            <el-button type="primary" v-on:click="changeUserInfo()">Change</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-button v-on:click="logout"><a href="/#/login">Logout</a></el-button>
         </el-form-item>
     </el-form>
+    </el-card>
     </el-col>
 
 </template>
 
-        <!-- TODO: change <el-col :offset="9"> to something -->
-
-
-<script setup>
-import { reactive } from 'vue'
-
-// do not use same name with ref
-const form = reactive({
-name: '',
-region: '',
-date1: '',
-date2: '',
-delivery: false,
-type: [],
-resource: '',
-desc: '',
-})
-
-const onSubmit = () => {
-console.log('submit!')
-}
-</script>
-
-
 <script>
     import axios from 'axios'
-    axios.defaults.baseURL = 'http://localhost:8080/';
-    import { ref } from 'vue'
-
 
     export default {
         name: 'UserSpace',
         data() {
             return {
-                account: "",
-                accounts: ref([{ name: 'first' }, { name: 'second' }]),
-                cards: ref([{ name: 'first', message: '5' }, { name: 'second', message: '55' }]),
-                username: '',
-                name: '',
-                password: '',
+                user : {},
+                accountMoney : 0
             }
         },
         methods: {
             login() {
-                axios.get("cqrs/register/" + this.$data.username +"/", {})
+            const instance = axios.create({
+                baseURL: 'http://localhost:8080/',
+                auth: { username: this.$store.getters.getLogin, password: this.$store.getters.getPassword },
+            });
+
+            instance.get("cqrs/register/" + this.$data.username +"/", {})
                 .then(response => {
                     this.$data.name = response.data.name
                     console.log(this.$data.name)
@@ -87,24 +65,38 @@ console.log('submit!')
             accountChange(name) {
                 this.$data.account = name
             },
-            loadAccounts() {
-                console.log(this.$store.getters.getLogin)
-                axios.get("cqrs/user/" + this.$store.getters.getLogin + "/", {})
+            loadUser() {
+                const instance = axios.create({
+                    baseURL: 'http://localhost:8080/',
+                    auth: { username: this.$store.getters.getLogin, password: this.$store.getters.getPassword },
+                });
+
+                instance.get("cqrs/user/", {})
                 .then(response => {
-                    console.log(response)
-                }, error => {
-                    this.$data.alertMessage = (error.length < 150) ? error.message : 'Request error';
-                    console.log(error)
-                })
-                .catch(e => {
-                    console.log(e);
-                    this.showAlert();
-                })
+                    console.log(response.data)
+                    this.$data.user = response.data
+                }, error => { console.log(error) })
+                .catch(e => { console.log(e); })
+            },
+            loadAccount() {
+
+            },
+            changeUserInfo() {
+                const instance = axios.create({
+                baseURL: 'http://localhost:8080/',
+                auth: { username: this.$store.getters.getLogin, password: this.$store.getters.getPassword },
+                });
+
+                instance.post("cqrs/user/"  , this.$data.user)
+                .then(response => {
+                    console.log(response.data)
+                }, error => { console.log(error) })
+                .catch(e => { console.log(e); })
 
             }
         },
         beforeMount(){
-            this.loadAccounts()
+            this.loadUser()
         },
     }
 </script>
