@@ -1,0 +1,32 @@
+version: "3.3"
+
+services:
+  postgres:
+    container_name: PostgresCqrs
+    image: postgres
+    environment:
+      POSTGRES_DB: "cqrs"
+      POSTGRES_USER: "cqrs"
+      POSTGRES_PASSWORD: "cqrs"
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
+  mongodb:
+    container_name: mongoCqrs
+    image: mongo:5.0
+    volumes:
+      - ~/apps/mongo:/data/db
+    ports:
+      - "27017:27017"
+
+  elasticsearch:
+    container_name: ElasticsearchCqrs
+    image: elasticsearch:7.6.2
+    environment:
+      discovery.type: "single-node"
+      POSTGRES_USER: "cqrs"
+      POSTGRES_PASSWORD: "cqrs"
+    ports:
+      - "9200:9200"
